@@ -1,0 +1,37 @@
+{
+    "directory_name": "native_project",
+    "project_name": "Native Project",
+    "project_prefix": "np",
+    "project_kind": ["ConsoleApp", "WindowedApp", "StaticLib", "SharedLib"],
+
+    "main_language": ["c99", "c89", "c++"],
+    
+    
+    "author_name": "Michael Labbe",
+    "author_email": "mike@frogtoss.com",
+    "author_twitter": "frogtoss",
+    "author_contact_url": "http://www.frogtoss.com/contact.html",
+    "copyright_holder": "Frogtoss Games, Inc",
+    "copyright_years": "2016",
+
+    "support_build": "y",
+    "support_shaders": "n",
+    "support_config": "n",
+    "support_public_include": "n",
+    "support_vendors": "n",
+    "support_test": "n",
+    "support_docs": "y",
+
+    
+    "share": "y",
+    "open_source_license": ["MIT license", "BSD license", "ISC license",
+                            "Apache Software License 2.0", "GNU General Public License v3", "Not open source"],
+
+    "execution_types": "debug,release,final",
+
+    "windows_x86": "vs2010,mingw",
+    "windows_x64": "vs2010,mingw",
+    "linux_x64":   "gcc,clang",
+    "linux_x86":   "gcc,clang",
+    "macos":       "xcode4,clang"
+}
