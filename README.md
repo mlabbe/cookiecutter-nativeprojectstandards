@@ -26,18 +26,14 @@ The philosophy behind the Native Project Standards is that it supports standardi
 
 ## TODO ##
 
-- git is (expectedly) trashing empty directories.  Put a placeholder tmpl in each one. 
+- add vendor_build to github
 - Add vendors support levels
   1. vendorbuild.py scripts
+    - mac, linux
   2. attempt include and linking in projects from template
 - Add `/tools` to native project standards, comment on public header files for executable projects (they can be used for mods)
 - Document the types
 - add vendor_build to pip
-
-## vendorbuild todo ##
-
-- install to vendors/lib/arch, not out.x86 and out.universal
-- support debug builds
 
 # Credits #
 
