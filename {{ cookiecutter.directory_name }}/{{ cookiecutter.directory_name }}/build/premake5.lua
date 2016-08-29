@@ -1,0 +1,232 @@
+-- {{ cookiecutter.project_name }} premake5 script
+--
+-- This can be ran directly, but commonly, it is only run
+-- by package maintainers.
+-- See http://www.frogtoss.com/labs/premake-for-package-maintainers.html
+--
+-- IMPORTANT NOTE: premake5 alpha 9 does not handle this script
+-- properly.  Build premake5 from Github master, or, presumably,
+-- use alpha 10 in the future.
+
+{% set x86_count = cookiecutter.windows_x86.split(',')|length + cookiecutter.linux_x86.split(',')|length -%}
+{% set x64_count = cookiecutter.windows_x64.split(',')|length + cookiecutter.linux_x64.split(',')|length -%}
+{% set etype_list = cookiecutter.execution_types.split(',') -%}
+{% set macos_list = cookiecutter.macos.split(',') -%}
+{% set windows_x86_list = cookiecutter.windows_x86.split(',') -%}
+{% set windows_x64_list = cookiecutter.windows_x64.split(',') -%}
+{% if cookiecutter.main_language == 'c89' or cookiecutter.main_language == 'c99' -%}
+  {% set lang_ext = 'c' -%}
+{% elif cookiecutter.main_language == 'c++' -%}
+  {% set lang_ext = 'cpp' -%}
+{% endif -%} 
+workspace "{{ cookiecutter.project_name|title }}"
+  -- these dir specifications assume the generated files have been moved
+  -- into a subdirectory.  ex: <root>/build/makefile
+  local root_dir = path.join(path.getdirectory(_SCRIPT),"../../")
+  local build_dir = path.join(path.getdirectory(_SCRIPT))
+  configurations { {% for etype in etype_list -%}
+   "{{ etype|title }}"{% if not loop.last %}, {% endif %}
+  {%- endfor %} }
+  platforms { {% if x64_count > 0 %}"x64"{% endif %}{% if x86_count > 0 and x64_count > 0 %}, {% endif %}{% if x86_count > 0 %}"x86"{% endif %} }
+
+  objdir(path.join(build_dir, "obj/"))
+
+  -- architecture filters
+  {% if x86_count > 0 %}
+  filter "configurations:x86"
+    architecture "x86"
+  {%- endif %}
+  {% if x64_count > 0 %}
+  filter "configurations:x64"
+    architecture "x86_64"
+  {%- endif %}
+
+  -- execution type filters
+  {%- if "debug" in etype_list %}
+  filter "configurations:Debug"
+    defines {"DEBUG", "_DEBUG", "FINAL_RELEASE=0"}
+    symbols "On"
+    targetsuffix "_d"
+  {% endif %}
+  {%- if "release" in etype_list %}
+  filter "configurations:Release"
+    defines {"NDEBUG", "FINAL_RELEASE=0"}
+    optimize "On"
+  {% endif %}
+  {%- if "final" in etype_list %}
+  filter "configurations:Final"   
+    defines {"NDEBUG", "FINAL_RELEASE=1"}
+    optimize "On"
+  {% endif %}
+   
+  project "{{ cookiecutter.project_prefix }}"
+    kind "{{ cookiecutter.project_kind }}"
+
+    files {root_dir.."src/**.h",
+           root_dir.."src/**.{{ lang_ext }}",
+{% if cookiecutter.support_config == 'y' %}           root_dir.."src/config/{{ cookiecutter.project_prefix }}config.h",{% endif %}
+{% if cookiecutter.support_public_include == 'y' %}           root_dir.."include/*.h",{% endif %}
+    }
+
+    includedirs {
+       root_dir.."src/include/",
+{% if cookiecutter.support_config == 'y' %}       root_dir.."src/config/",{% endif %}
+{% if cookiecutter.support_public_include == 'y' %}       root_dir.."include/",{% endif %}
+{% if cookiecutter.support_vendors == 'y' %}       root_dir.."vendors/include",{% endif %}
+    }
+
+    targetdir(build_dir.."/lib/%{cfg.buildcfg}/%{cfg.platform}")
+
+    filter "system:linux or system:macosx"
+{%- if cookiecutter.main_language == 'c89' %}
+      buildoptions {"--std=gnu90"}
+{% elif cookiecutter.main_language == 'c99' %}
+      buildoptions {"--std=gnu99"}
+{% elif cookiecutter.main_language == 'c++' %}
+      buildoptions {"--std=c++11"}
+{% endif %}
+    -- features: off by default, turn them on and regenerate
+    -- if you need them
+    filter{}
+    rtti("off")
+    exceptionhandling("off")
+    filter "action:vs*"
+      defines {"_CRT_SECURE_NO_WARNINGS"}
+
+{% if cookiecutter.support_vendors == 'y' %}
+    filter "architecture:x86"
+      libdirs(root_dir.."vendors/lib/x86")
+
+    filter "architecture:x86_64"
+      libdirs(root_dir.."vendors/lib/x64")
+
+{% if cookiecutter.uselib_sdl2 == 'y' %}
+    filter{}
+      links { 'SDL2', 'SDL2main' }
+{% endif %-}
+      
+{% endif %-}
+
+{% if cookiecutter.has_dist_dir == 'y' %}
+    -- cwd for debug execution is relative to installed DLL
+    -- directory.
+    filter("architecture:x86", "action:vs*")
+      debugdir(root_dir..'../native_project_dist/bin/win32_x86')
+    
+    filter("architecture:x64", "action:vs*")
+      debugdir(root_dir..'../native_project_dist/bin/win32_x64')
+{% endif %}
+
+newaction
+{
+   trigger = "dist",
+   description = "Create distributable premake dirs (maintainer only)",
+   execute = function()
+
+
+      -- special denotes the action *and* os_str make up the dir name
+      -- needed when an action alone is ambiguous (ex: gmake runs on multiple OSes)
+      local premake_do_action = function(action,os_str,special)
+         local premake_dir
+         if special then
+            premake_dir = "./"..action.."_"..os_str
+         else
+            premake_dir = "./"..action
+         end
+         local premake_path = premake_dir.."/premake5.lua"
+
+         os.execute("mkdir "..premake_dir)
+         os.execute("cp premake5.lua "..premake_dir)
+         os.execute("premake5 --os="..os_str.." --file="..premake_path.." "..action)
+         os.execute("rm "..premake_path)
+      end
+
+{% for proj in windows_x86_list if not proj == 'mingw' and not proj in windows_x64_list %}
+      premake_do_action("{{ proj }}", "windows", false)  
+{% endfor -%} 
+{% for proj in windows_x64_list if not proj == 'mingw' %}
+      premake_do_action("{{ proj }}", "windows", false)  
+{%- endfor -%} 
+{% if 'xcode4' in macos_list %}
+      premake_do_action("xcode4", "macosx", false)
+{%- endif -%}
+{% if cookiecutter.linux_x64|length > 0 or cookiecutter.linux_x86|length > 0 %}      
+      premake_do_action("gmake", "linux", true)
+{%- endif -%}
+{% if 'clang' in macos_list %}      
+      premake_do_action("gmake", "macosx", true)
+{%- endif -%}
+{% if 'mingw' in windows_x64_list or 'mingw' in windows_x86_list %}
+      premake_do_action("gmake", "windows", true)
+{%- endif %} 
+   end
+}
+
+-- currently there is no premake5 clean action, so this will have to suffice
+-- this deletes the premake5 --action=dist generated subdirectories
+newaction
+{
+    trigger     = "clean",
+    description = "Clean all build files and output",
+    execute = function ()
+
+        files_to_delete = 
+        {
+            "Makefile",
+            "*.make",
+            "*.txt",
+            "*.7z",
+            "*.zip",
+            "*.tar.gz",
+            "*.db",
+            "*.opendb",
+            "*.vcproj",
+            "*.vcxproj",
+            "*.vcxproj.user",
+            "*.vcxproj.filters",
+            "*.sln",
+            "*~*"
+        }
+
+        directories_to_delete = 
+        {
+            "obj",
+            "ipch",
+            "bin",
+            ".vs",
+            "Debug",
+            "Release",
+            "release",
+            "lib",
+            "test",
+            "makefiles",
+            "gmake",
+            "vs2010",
+            "xcode4",
+            "gmake_linux",
+            "gmake_macosx",
+            "gmake_windows"
+        }
+
+        for i,v in ipairs( directories_to_delete ) do
+          os.rmdir( v )
+        end
+
+        if os.is "macosx" then
+           os.execute("rm -rf *.xcodeproj")
+           os.execute("rm -rf *.xcworkspace")
+        end
+
+        if not os.is "windows" then
+            os.execute "find . -name .DS_Store -delete"
+            for i,v in ipairs( files_to_delete ) do
+              os.execute( "rm -f " .. v )
+            end
+        else
+            for i,v in ipairs( files_to_delete ) do
+              os.execute( "del /F /Q  " .. v )
+            end
+        end
+
+    end
+}
