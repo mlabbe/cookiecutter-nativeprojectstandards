@@ -11,6 +11,8 @@ def enabled(arg):
 
 def rmdir(*path_parts):
     path = os.sep.join(str(i) for i in path_parts)
+    if not os.path.exists(path):
+        return
     print("Pruning unwanted %s%c" % (path, os.sep))
     shutil.rmtree(path)
 
@@ -22,32 +24,39 @@ if __name__ == '__main__':
     #
     # Prune
     #
+    code_root = '{{ cookiecutter.directory_name }}'
     if not enabled('{{ cookiecutter.support_build }}'):
-        rmdir('build')
+        rmdir(code_root, 'build')
         shutil.rmtree("build")
         
     if not enabled('{{ cookiecutter.support_shaders }}'):
-        rmdir('src', 'shaders')
+        rmdir(code_root, 'src', 'shaders')
             
     if not enabled('{{ cookiecutter.support_config }}'):
-        rmdir('src', 'config')
+        rmdir(code_root, 'src', 'config')
 
     if not enabled('{{ cookiecutter.support_public_include }}'):
-        rmdir('include')
+        rmdir(code_root, 'include')
 
     if not enabled('{{ cookiecutter.support_vendors }}'):
-        rmdir("vendors")
+        rmdir(code_root, "vendors")
 
     if not enabled('{{ cookiecutter.support_test }}'):
-        rmdir("test")
+        rmdir(code_root, "test")
+
+    if not enabled('{{ cookiecutter.support_docs }}'):
+        rmdir(code_root, "docs")
 
     if not enabled('{{ cookiecutter.share }}'):
         print("Pruning LICENSE")
-        os.remove("LICENSE")
+        os.remove(path_join(code_root, "LICENSE"))
+
+    if not enabled('{{ cookiecutter.uselib_sdl2 }}'):
+        rmdir(code_root, "vendors", "SDL2")
 
     # rename main project file based on extension
     if '{{ cookiecutter.main_language }}' == 'c++':
-        path = path_join('src', '{{ cookiecutter.project_prefix }}')
+        path = path_join(code_root, 'src', '{{ cookiecutter.project_prefix }}')
         src_path = path + '.c'
         dst_path = path + '.cpp'
         os.rename(src_path, dst_path)
@@ -55,6 +64,8 @@ if __name__ == '__main__':
     #
     # Run premake
     #
-    os.chdir("build")
+    os.chdir(path_join(code_root, "build"))
+    print(os.getcwd())
+    print("---")
     os.system("premake5 dist")
-    os.chdir("..")
+    os.chdir("../..")

@@ -4,8 +4,9 @@
     "project_prefix": "np",
     "project_kind": ["ConsoleApp", "WindowedApp", "StaticLib", "SharedLib"],
 
-    "main_language": ["c99", "c89", "c++"],
+    "has_dist_dir": "y",
     
+    "main_language": ["c99", "c89", "c++"],
     
     "author_name": "Michael Labbe",
     "author_email": "mike@frogtoss.com",
@@ -15,13 +16,14 @@
     "copyright_years": "2016",
 
     "support_build": "y",
-    "support_shaders": "n",
-    "support_config": "n",
-    "support_public_include": "n",
-    "support_vendors": "n",
-    "support_test": "n",
+    "support_shaders": "y",
+    "support_config": "y",
+    "support_public_include": "y",
+    "support_vendors": "y",
+    "support_test": "y",
     "support_docs": "y",
 
+    "uselib_sdl2": "y",
     
     "share": "y",
     "open_source_license": ["MIT license", "BSD license", "ISC license",
@@ -34,4 +36,5 @@
     "linux_x64":   "gcc,clang",
     "linux_x86":   "gcc,clang",
     "macos":       "xcode4,clang"
+
 }
