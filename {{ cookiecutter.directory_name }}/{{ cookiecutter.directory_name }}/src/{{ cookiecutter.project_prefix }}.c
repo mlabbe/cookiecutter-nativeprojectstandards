@@ -3,10 +3,10 @@
  * 
  */
 {% if cookiecutter.support_config %}
-#include <{{ cookiecutter.project_prefix }}config.h>
+#include "{{ cookiecutter.project_prefix }}config.h"
 {%- endif -%}
 {% if cookiecutter.support_public_include %}
-#include <{{ cookiecutter.project_prefix }}.h>
+#include "{{ cookiecutter.project_prefix }}.h"
 {%- endif -%}
 {% if cookiecutter.uselib_sdl2 %}
 #include <stdlib.h> /* for atexit() */

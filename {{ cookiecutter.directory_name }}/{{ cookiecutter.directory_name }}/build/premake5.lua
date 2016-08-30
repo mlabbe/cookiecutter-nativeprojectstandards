@@ -69,11 +69,15 @@ workspace "{{ cookiecutter.project_name|title }}"
     }
 
     includedirs {
-       root_dir.."src/include/",
 {% if cookiecutter.support_config == 'y' %}       root_dir.."src/config/",{% endif %}
 {% if cookiecutter.support_public_include == 'y' %}       root_dir.."include/",{% endif %}
-{% if cookiecutter.support_vendors == 'y' %}       root_dir.."vendors/include",{% endif %}
     }
+
+{% if cookiecutter.support_vendors == 'y' %}
+     sysincludedirs {
+        root_dir.."vendors/include",        
+     }
+{% endif %}
 
     targetdir(build_dir.."/lib/%{cfg.buildcfg}/%{cfg.platform}")
 
@@ -94,20 +98,22 @@ workspace "{{ cookiecutter.project_name|title }}"
       defines {"_CRT_SECURE_NO_WARNINGS"}
 
 {% if cookiecutter.support_vendors == 'y' %}
-    filter "architecture:x86"
+    filter("architecture:x86", "system:not macosx") 
       libdirs(root_dir.."vendors/lib/x86")
 
-    filter "architecture:x86_64"
+    filter("architecture:x86_64", "system:not macosx")      
       libdirs(root_dir.."vendors/lib/x64")
 
+    filter "system:macosx"
+      libdirs(root_dir.."vendors/lib")
+      
 {% if cookiecutter.uselib_sdl2 == 'y' %}
     filter{}
-      links { 'SDL2', 'SDL2main' }
-{% endif %-}
+      links {'SDL2'}
+{% endif %}
       
-{% endif %-}
-
-{% if cookiecutter.has_dist_dir == 'y' %}
+{%- endif %}
+{%- if cookiecutter.has_dist_dir == 'y' %}
     -- cwd for debug execution is relative to installed DLL
     -- directory.
     filter("architecture:x86", "action:vs*")

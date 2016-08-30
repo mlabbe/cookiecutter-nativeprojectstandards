@@ -8,12 +8,12 @@ import vendor_build
 from vendor_build import BuildLib, BuildCLI
 from os.path import join as path_join
 
-{{ cookiecutter.project_prefix|upper }}ROOT = None
-{{ cookiecutter.project_prefix|upper }}BIN  = None
+xxxROOT = None
+xxxBIN  = None
 
 def build_windows(lib_name, builder):
     arch = builder.get_arch()
-    builder.set_rootdir(path_join({{ cookiecutter.project_prefix|upper }}ROOT, 'vendors', lib_name))
+    builder.set_rootdir(path_join(xxxROOT, 'vendors', lib_name))
 
     sln_name = os.path.normpath("VisualC/SDL_VS2008.sln")
     builder.devenv_upgrade(sln_name)
@@ -32,18 +32,41 @@ def build_windows(lib_name, builder):
         arch_dir = 'win32'
 
     # install dll
-    if {{ cookiecutter.project_prefix|upper }}BIN != None:
+    if xxxBIN != None:
         dll_path = path_join('VisualC', arch_dir, config, 'SDL2.dll')
-        builder.install_file_in_bin_dir(os.path.normpath(dll_path), {{ cookiecutter.project_prefix|upper }}BIN)
+        builder.install_file_in_bin_dir(os.path.normpath(dll_path), xxxBIN)
 
     # install header files and libary
-    builder.copy_header_files('include', {{ cookiecutter.project_prefix|upper }}ROOT)
+    builder.copy_header_files('include', xxxROOT)
 
     lib_dir = path_join('VisualC', arch_dir, config)
     libsdl2_path     = path_join(lib_dir, 'SDL2.lib')
     libsdl2main_path = path_join(lib_dir, 'SDL2main.lib')
-    builder.copy_lib_file(libsdl2_path, {{ cookiecutter.project_prefix|upper }}ROOT)
-    builder.copy_lib_file(libsdl2main_path, {{ cookiecutter.project_prefix|upper }}ROOT)
+    builder.copy_lib_file(libsdl2_path, xxxROOT)
+    builder.copy_lib_file(libsdl2main_path, xxxROOT)
+
+    
+def build_macos(libname, builder):
+    supported_arch = [vendor_build.arch_x86, vendor_build.arch_x64]
+    build_product_names = ['libSDL2-2.0.0.dylib', 'libSDL2.a']
+    builder.verify_environment()
+    builder.set_rootdir(path_join(xxxROOT, 'vendors', lib_name))
+
+    # build
+    for arch in supported_arch:
+        builder.set_arch_environment( xxxROOT, arch, universal_working_dir=True )
+        builder.configure( ['--disable-video-x11' ] ) 
+        builder.make_command( 'clean' )
+        builder.make()
+        builder.make_command( 'install' )
+
+    # combine
+    if len( supported_arch ) > 1:
+        builder.setup_universal_paths(xxxROOT)
+        builder.lipo_create( xxxROOT, supported_arch, build_product_names )
+        builder.symlink_to_universal(xxxROOT, build_product_names[0], 'libSDL2.dylib' )
+        builder.copy_header_files('include', xxxROOT)
+    
         
 
 if __name__ == '__main__':
@@ -52,13 +75,15 @@ if __name__ == '__main__':
     builder = BuildLib(cli)
     builder.verify_environment()
 
-    {{ cookiecutter.project_prefix|upper }}ROOT = vendor_build.get_project_root_dir('{{ cookiecutter.project_prefix|upper }}')
-    {{ cookiecutter.project_prefix|upper }}BIN  = vendor_build.get_project_bin_dir('{{ cookiecutter.project_prefix|upper }}')
-    print("project root dir: %s" % {{ cookiecutter.project_prefix|upper }}ROOT)
+    xxxROOT = vendor_build.get_project_root_dir('{{ cookiecutter.project_prefix|upper }}')
+    xxxBIN  = vendor_build.get_project_bin_dir('{{ cookiecutter.project_prefix|upper }}')
     
     try:
         if cli.get_target_platform() == 'Windows':
             build_windows(lib_name, builder)
+
+        if cli.get_target_platform() == 'Darwin':
+            build_macos(lib_name, builder)            
 
     except vendor_build.BuildError as e:
         print("Failed building %s: %s" % (lib_name, e))
