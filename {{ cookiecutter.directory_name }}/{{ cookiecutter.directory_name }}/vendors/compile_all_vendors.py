@@ -9,6 +9,9 @@ vendors = [
 {% if cookiecutter.uselib_sdl2 == 'y' -%}
     'SDL2',
 {%- endif %}
+{% if cookiecutter.uselib_bgfx == 'y' -%}
+    'bgfx',
+{%- endif %}    
 ]
 
 def compile_vendor( vendor, cli ):
@@ -35,6 +38,7 @@ def compile_vendor( vendor, cli ):
     except subprocess.CalledProcessError as e:
         raise vendor_build.BuildError( 'compile_vendor( %s ) returned %i ' % 
                                     (vendor, e.returncode ) )
+    os.chdir('..')
 
 
 if __name__ == '__main__':

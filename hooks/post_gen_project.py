@@ -57,6 +57,8 @@ def download_install(code_root, vendor_name, archive_url):
         src_dir = path_join(src_dir, tmp_contents[0])
 
     dst_dir = path_join(code_root, 'vendors', vendor_name)
+    if not os.path.isdir(dst_dir):
+        os.mkdir(dst_dir)
     copyintotree(src_dir, dst_dir)
 
 #
@@ -89,6 +91,10 @@ if __name__ == '__main__':
 
     if not enabled('{{ cookiecutter.support_docs }}'):
         rmdir(code_root, "docs")
+
+    if not enabled('{{ cookiecutter.has_dist_dir }}'):
+        dist_root = '{{ cookiecutter.directory_name }}_dist'
+        rmdir(dist_root)
 
     # can't get rid of tools if vendors is being supported:
     # tools/pylib contains vendorcompile.py
@@ -135,6 +141,9 @@ if __name__ == '__main__':
     if '{{ cookiecutter.support_vendors }}' == 'y':
         if '{{ cookiecutter.uselib_sdl2 }}' == 'y':
             download_install(code_root, "SDL2", "{{ cookiecutter.sdl2_archive_url }}")
+        if '{{ cookiecutter.uselib_bgfx }}' == 'y':
+            download_install(code_root, "bgfx", "{{ cookiecutter.bgfx_archive_url }}")
+            download_install(code_root, "bx", "{{ cookiecutter.bg_archive_url }}")
 
     # 
     # success message

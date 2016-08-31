@@ -12,6 +12,9 @@
 #include <stdlib.h> /* for atexit() */
 #include <SDL.h>
 {%- endif -%}
+{% if cookiecutter.uselib_bgfx == 'y' %}
+#include <bgfx/c99/bgfx.h>
+{%- endif -%}
 
 {% if cookiecutter.project_kind == 'ConsoleApp' or cookiecutter.project_kind == 'WindowedApp' %}
 #include <stdio.h>
@@ -30,6 +33,15 @@ int main(int argc, char *argv[]) {
     }
     atexit(SDL_Quit);    
 {%- endif %}
+
+{% if cookiecutter.uselib_bgfx == 'y' %}
+	bgfx_init(BGFX_RENDERER_TYPE_COUNT
+			, BGFX_PCI_ID_NONE
+			, 0
+			, NULL
+			, NULL);
+{%- endif %}   
+ 
     return 0;
 }
 {% endif %}

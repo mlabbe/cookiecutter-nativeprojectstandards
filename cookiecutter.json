@@ -27,14 +27,18 @@
 
     "uselib_sdl2": "n",
     "sdl2_archive_url": "http://libsdl.org/release/SDL2-2.0.4.zip",
+
+    "uselib_bgfx": "n",
+    "bgfx_archive_url": "https://github.com/bkaradzic/bgfx/archive/master.zip",
+    "bg_archive_url":   "https://github.com/bkaradzic/bx/archive/master.zip",
     
     "open_source_license": ["MIT license", "BSD license", "ISC license",
                             "Apache Software License 2.0", "GNU General Public License v3", "Not open source"],
 
     "execution_types": "debug,release,final",
 
-    "windows_x86": "vs2010,mingw",
-    "windows_x64": "vs2010,mingw",
+    "windows_x86": "vs2015,mingw",
+    "windows_x64": "vs2015,mingw",
     "linux_x64":   "gcc,clang",
     "linux_x86":   "gcc,clang",
     "macos":       "xcode4,clang"

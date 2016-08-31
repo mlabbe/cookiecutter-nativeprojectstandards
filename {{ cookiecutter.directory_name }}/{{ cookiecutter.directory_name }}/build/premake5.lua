@@ -116,6 +116,12 @@ workspace "{{ cookiecutter.project_name|title }}"
     filter "system:windows"
       links {"SDL2main"}
 {% endif %}
+
+{% if cookiecutter.uselib_bgfx == 'y' %}
+    -- bgfx linking
+    filter {}
+      links {'bgfxRelease'}
+{% endif %} 
       
 {%- endif %}
 {%- if cookiecutter.has_dist_dir == 'y' %}
