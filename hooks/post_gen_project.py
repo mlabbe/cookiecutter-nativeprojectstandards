@@ -1,5 +1,9 @@
 import os
+import io
 import shutil
+import zipfile
+import tempfile
+import urllib.request
 
 from os.path import join as path_join
 
@@ -15,6 +19,44 @@ def rmdir(*path_parts):
         return
     print("Pruning unwanted %s%c" % (path, os.sep))
     shutil.rmtree(path)
+
+def copyintotree(src, dst, symlinks=False, ignore=None):
+    """Copy files in src into possibly existing directly dst"""
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+    for item in os.listdir(src):
+        s = os.path.join(src, item)
+        d = os.path.join(dst, item)
+        if os.path.isdir(s):
+            copyintotree(s, d, symlinks, ignore)
+        else:
+            if not os.path.exists(d) or os.stat(s).st_mtime - os.stat(d).st_mtime > 1:
+                shutil.copy2(s, d)
+
+def download_install(code_root, vendor_name, archive_url):
+    print("Downloading %s from %s ..." % (vendor_name, archive_url))
+    response = urllib.request.urlopen(archive_url)
+    data = response.read()
+    print("Completed")
+    zip_bytes = io.BytesIO(data)
+
+    tmp_dir = tempfile.TemporaryDirectory(suffix="cookiecutter_post_gen_project")
+
+    zip = zipfile.ZipFile(zip_bytes)
+    zip.extractall(tmp_dir.name)
+    print("unzipped to " + tmp_dir.name)
+
+    src_dir = tmp_dir.name    
+    # if there is only one directory in the tempdir, then move the contents to vendor_name
+    tmp_contents = os.listdir(tmp_dir.name)
+    if len(tmp_contents) == 1:
+        print("happenin'")
+        src_dir = path_join(src_dir, tmp_contents[0])
+
+    print("src_dir: " + src_dir)
+
+    dst_dir = path_join(code_root, 'vendors', vendor_name)
+    copyintotree(src_dir, dst_dir)
 
 #
 # begin main
@@ -69,3 +111,8 @@ if __name__ == '__main__':
     print("---")
     os.system("premake5 dist")
     os.chdir("../..")
+
+    #
+    # Download vendors
+    # 
+    download_install(code_root, "SDL2", "{{ cookiecutter.sdl2_archive_url }}")

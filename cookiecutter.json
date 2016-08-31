@@ -24,6 +24,7 @@
     "support_docs": "y",
 
     "uselib_sdl2": "y",
+    "sdl2_archive_url": "http://libsdl.org/release/SDL2-2.0.4.zip",
     
     "share": "y",
     "open_source_license": ["MIT license", "BSD license", "ISC license",

@@ -108,8 +108,11 @@ workspace "{{ cookiecutter.project_name|title }}"
       libdirs(root_dir.."vendors/lib")
       
 {% if cookiecutter.uselib_sdl2 == 'y' %}
+    -- libSDL2 linking
     filter{}
       links {'SDL2'}
+    filter "system:linux"
+      links {"dl", "pthread"}
 {% endif %}
       
 {%- endif %}
