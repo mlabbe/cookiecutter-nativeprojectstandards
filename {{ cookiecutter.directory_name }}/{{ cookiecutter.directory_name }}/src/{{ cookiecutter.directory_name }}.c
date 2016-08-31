@@ -6,10 +6,10 @@
 #include "{{ cookiecutter.project_prefix }}config.h"
 {%- endif -%}
 {% if cookiecutter.support_public_include == 'y' %}
-#include "{{ cookiecutter.native_project }}.h" /* public header */
+#include "{{ cookiecutter.directory_name }}.h" /* public header */
 {%- endif -%}
 {% if cookiecutter.uselib_sdl2 == 'y' %}
-#include <stdlib.h>                            /* for atexit() */
+#include <stdlib.h> /* for atexit() */
 #include <SDL.h>
 {%- endif -%}
 

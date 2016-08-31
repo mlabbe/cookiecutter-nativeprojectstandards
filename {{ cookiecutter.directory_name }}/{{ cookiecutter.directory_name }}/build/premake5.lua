@@ -113,6 +113,8 @@ workspace "{{ cookiecutter.project_name|title }}"
       links {'SDL2'}
     filter "system:linux"
       links {"dl", "pthread"}
+    filter "system:windows"
+      links {"SDL2main"}
 {% endif %}
       
 {%- endif %}
@@ -120,10 +122,10 @@ workspace "{{ cookiecutter.project_name|title }}"
     -- cwd for debug execution is relative to installed DLL
     -- directory.
     filter("architecture:x86", "action:vs*")
-      debugdir(root_dir..'../native_project_dist/bin/win32_x86')
+      debugdir(root_dir..'../{{ cookiecutter.directory_name }}_dist/bin/win32_x86')
     
     filter("architecture:x64", "action:vs*")
-      debugdir(root_dir..'../native_project_dist/bin/win32_x64')
+      debugdir(root_dir..'../{{ cookiecutter.directory_name }}_dist/bin/win32_x64')
 {% endif %}
 
 newaction
