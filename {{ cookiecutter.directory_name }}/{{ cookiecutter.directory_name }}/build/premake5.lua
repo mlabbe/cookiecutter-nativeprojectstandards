@@ -121,6 +121,8 @@ workspace "{{ cookiecutter.project_name|title }}"
     -- bgfx linking
     filter {}
       links {'bgfxRelease'}
+    filter "system:linux"
+      links {'GL', 'X11'}
 {% endif %} 
       
 {%- endif %}

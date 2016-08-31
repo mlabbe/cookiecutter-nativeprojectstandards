@@ -52,7 +52,45 @@ def build_macos(libname, builder):
     pass
 
 def build_linux(lib_name, builder):
-    pass
+    ACTION='gmake'
+    arch = builder.get_arch()
+    builder.set_rootdir(path_join(xxxROOT, 'vendors', lib_name))
+    
+    # generate build scripts
+    bx_root = os.path.abspath(path_join('../', 'bx'))
+    genie_exe = path_join(bx_root, 'tools', 'bin', 'linux', 'genie')
+    if not os.path.isfile(genie_exe):
+        print("Could not find " + genie_exe)
+        sys.exit(1)
+
+    os.system("chmod +x " + genie_exe)
+    builder.shell([genie_exe, '--gcc=linux-gcc', ACTION])
+
+    # build
+    if builder.build_debug():
+        config = 'debug'
+    else:
+        config = 'release'
+
+    if arch == vendor_build.arch_x64:
+        bits = '64'
+    elif vendor_build.arch_x86:
+        bits = '32'
+
+    # install lib
+    build_dir = path_join('.build', 'projects', 'gmake-linux')
+    os.chdir(build_dir)
+    jobs = vendor_build.globals['default_parallel_jobs']
+    builder.make_command(['config=%s%s' % (config, bits), 'verbose=1', \
+                          '--jobs=%d' % jobs])
+    os.chdir('../../../')
+
+    lib_path = path_join('.build', 'linux%s_gcc' % bits, 'bin') 
+    lib_path = path_join(lib_path, 'libbgfx%s.a' % config.title())
+    builder.copy_lib_file(lib_path, xxxROOT)
+
+    # install headers
+    builder.copy_header_files('include', xxxROOT)
 
 if __name__ == '__main__':
     lib_name = 'bgfx'

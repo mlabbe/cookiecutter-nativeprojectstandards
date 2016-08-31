@@ -20,6 +20,12 @@ release | what's new                          | date
 {{ cookiecutter.project_name }} uses [Premake5](https://premake.github.io/download.html) generated Makefiles and IDE project files.  The generated project files are checked in under `build/` so you don't have to download and use Premake in most cases.
 {% endif %}
 
+{%- if cookiecutter.uselib_bgfx == 'y' %}
+### Linux ###
+
+    apt-get install libgl1-mesa-dev x11proto-core-dev libx11-dev
+{% endif %}
+
 # Copyright and Credit #
 
 Copyright &copy; {{ cookiecutter.copyright_years }} {{ cookiecutter.copyright_holder }}. {% if cookiecutter.open_source_license == "Not open source" %}File [LICENSE](LICENSE) covers all files in this repo unless expressly noted.{% endif %}
