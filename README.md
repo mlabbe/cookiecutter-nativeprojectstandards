@@ -26,10 +26,11 @@ The philosophy behind the Native Project Standards is that it supports standardi
 
 ## TODO ##
 
-- Document the types
-- add bgfx
-- add vendor_build to pypi
-- document this shit
+- improve generated readme.md, especially when it comes to building
+- document
+ - all of the build commands
+ - supported configurations
+ - how vendors works
 - Add `/tools` to native project standards, comment on public header files for executable projects (they can be used for mods)
 
 # Credits #
