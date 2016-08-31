@@ -26,18 +26,15 @@ The philosophy behind the Native Project Standards is that it supports standardi
 
 ## TODO ##
 
-- add vendor_build to github
 - Add vendors support levels
-  1. vendorbuild.py scripts
-    - linux
-  2. optional deploy library from http grab
-  3. infer NPBIN Dir location
   4. Refine api (too much redundancy)
   5. Add compile_all_vendors.py
 - Add `/tools` to native project standards, comment on public header files for executable projects (they can be used for mods)
 - Add support for buildinfo.h
 - Document the types
-- add vendor_build to pip
+- add bgfx
+- add vendor_build to pypi
+- document this shit
 
 # Credits #
 

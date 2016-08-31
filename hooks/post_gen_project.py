@@ -34,6 +34,9 @@ def copyintotree(src, dst, symlinks=False, ignore=None):
                 shutil.copy2(s, d)
 
 def download_install(code_root, vendor_name, archive_url):
+    if len(archive_url) == 0:
+        return
+
     print("Downloading %s from %s ..." % (vendor_name, archive_url))
     response = urllib.request.urlopen(archive_url)
     data = response.read()
@@ -50,10 +53,8 @@ def download_install(code_root, vendor_name, archive_url):
     # if there is only one directory in the tempdir, then move the contents to vendor_name
     tmp_contents = os.listdir(tmp_dir.name)
     if len(tmp_contents) == 1:
-        print("happenin'")
+        print("unzipping the contents of zip's %s into %s" % (tmp_contents[0], vendor_name))
         src_dir = path_join(src_dir, tmp_contents[0])
-
-    print("src_dir: " + src_dir)
 
     dst_dir = path_join(code_root, 'vendors', vendor_name)
     copyintotree(src_dir, dst_dir)
@@ -115,4 +116,19 @@ if __name__ == '__main__':
     #
     # Download vendors
     # 
-    download_install(code_root, "SDL2", "{{ cookiecutter.sdl2_archive_url }}")
+    if '{{ cookiecutter.support_vendors }}' == 'y':
+        if '{{ cookiecutter.uselib_sdl2 }}' == 'y':
+            download_install(code_root, "SDL2", "{{ cookiecutter.sdl2_archive_url }}")
+
+    # 
+    # success message
+    #
+    print("\nSuccessfully generated project")
+    print("Next steps: ")
+    print("\tadd {{ cookiecutter.directory_name }} into source control")
+    if '{{ cookiecutter.has_dist_dir }}' == 'y':
+        print("\tadd {{ cookiecutter.directory_name }}_dist into source control")
+
+    if '{{ cookiecutter.support_vendors }}' == 'y':
+        print("\tgo into {{ cookiecutter.directory_name }}/vendors and run compile_all_vendors.py")
+    print("\tgo into {{ cookiecutter.directory_name }}/build and build the desired project")

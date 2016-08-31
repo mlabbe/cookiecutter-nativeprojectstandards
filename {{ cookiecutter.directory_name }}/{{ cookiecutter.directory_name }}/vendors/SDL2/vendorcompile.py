@@ -2,7 +2,7 @@ import os
 import sys
 
 # temp: until I ship it
-sys.path.append("../../../../vendor_build/vendor_build")
+sys.path.append("../../../../../vendor_build/vendor_build")
 
 import vendor_build
 from vendor_build import BuildLib, BuildCLI
