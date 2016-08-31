@@ -90,12 +90,28 @@ if __name__ == '__main__':
     if not enabled('{{ cookiecutter.support_docs }}'):
         rmdir(code_root, "docs")
 
-    if not enabled('{{ cookiecutter.share }}'):
+    # can't get rid of tools if vendors is being supported:
+    # tools/pylib contains vendorcompile.py
+    if not enabled('{{ cookiecutter.support_tools }}') and \
+       not enabled('{{ cookiecutter.support_vendors }}'):
+        rmdir(code_root, "tools")
+
+    if not enabled('{{ cookiecutter.support_vendors }}'):
+        rmdir(code_root, "tools", "pylib")
+
+    if '{{ cookiecutter.open_source_license }}' == 'Not open source':
         print("Pruning LICENSE")
         os.remove(path_join(code_root, "LICENSE"))
 
+    if not enabled('{{ cookiecutter.support_config_buildinfo }}'):
+        buildinfo_path = path_join(code_root, "src", "config", \
+                                   '{{ cookiecutter.project_prefix }}buildinfo.h')
+        if os.path.exists(buildinfo_path):
+            os.remove(buildinfo_path)
+
     if not enabled('{{ cookiecutter.uselib_sdl2 }}'):
         rmdir(code_root, "vendors", "SDL2")
+
 
     # rename main project file based on extension
     if '{{ cookiecutter.main_language }}' == 'c++':

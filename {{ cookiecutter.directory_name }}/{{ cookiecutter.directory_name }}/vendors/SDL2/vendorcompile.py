@@ -1,9 +1,7 @@
 import os
 import sys
 
-# temp: until I ship it
-sys.path.append("../../../../../vendor_build/vendor_build")
-
+sys.path.append("../../tools/pylib")
 import vendor_build
 from vendor_build import BuildLib, BuildCLI
 from os.path import join as path_join

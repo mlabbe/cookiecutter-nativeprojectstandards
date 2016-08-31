@@ -22,7 +22,7 @@ release | what's new                          | date
 
 # Copyright and Credit #
 
-Copyright &copy; {{ cookiecutter.copyright_years }} {{ cookiecutter.copyright_holder }}. {% if cookiecutter.share %}File [LICENSE](LICENSE) covers all files in this repo unless expressly noted.{% endif %}
+Copyright &copy; {{ cookiecutter.copyright_years }} {{ cookiecutter.copyright_holder }}. {% if cookiecutter.open_source_license == "Not open source" %}File [LICENSE](LICENSE) covers all files in this repo unless expressly noted.{% endif %}
 
 {{ cookiecutter.project_name }} by {{ cookiecutter.author_name }}
 <{{ cookiecutter.author_email }}> 
