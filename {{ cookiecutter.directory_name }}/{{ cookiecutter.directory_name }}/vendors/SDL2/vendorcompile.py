@@ -45,6 +45,9 @@ def build_windows(lib_name, builder):
 
     
 def build_macos(libname, builder):
+    # this code is not currently called, but is being left in so
+    # universal binaries can be brought back if needed in the future.
+    # currently, we only support macos x64
     supported_arch = [vendor_build.arch_x86, vendor_build.arch_x64]
     build_product_names = ['libSDL2-2.0.0.dylib', 'libSDL2.a']
     builder.verify_environment()
@@ -66,7 +69,7 @@ def build_macos(libname, builder):
         builder.copy_header_files('include', xxxROOT)
     
 
-def build_linux(lib_name, builder):
+def build_linux_or_macos(lib_name, builder):
     builder.verify_environment()
     builder.set_rootdir(path_join(xxxROOT, 'vendors', lib_name))
     builder.set_arch_environment(xxxROOT)
@@ -93,10 +96,10 @@ if __name__ == '__main__':
             build_windows(lib_name, builder)
 
         if cli.get_target_platform() == 'Darwin':
-            build_macos(lib_name, builder)            
+            build_linux_or_macos(lib_name, builder)            
 
         if cli.get_target_platform() == 'Linux':
-            build_linux(lib_name, builder)
+            build_linux_or_macos(lib_name, builder)
 
     except vendor_build.BuildError as e:
         print("Failed building %s: %s" % (lib_name, e))

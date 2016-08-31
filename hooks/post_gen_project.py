@@ -121,7 +121,7 @@ if __name__ == '__main__':
 
     # rename main project file based on extension
     if '{{ cookiecutter.main_language }}' == 'c++':
-        path = path_join(code_root, 'src', '{{ cookiecutter.project_prefix }}')
+        path = path_join(code_root, 'src', '{{ cookiecutter.directory_name }}')
         src_path = path + '.c'
         dst_path = path + '.cpp'
         os.rename(src_path, dst_path)

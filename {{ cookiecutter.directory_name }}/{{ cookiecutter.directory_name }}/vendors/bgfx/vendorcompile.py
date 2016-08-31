@@ -49,7 +49,48 @@ def build_windows(lib_name, builder):
 
     
 def build_macos(libname, builder):
-    pass
+    ACTION='gmake'
+    arch = builder.get_arch()
+    builder.set_rootdir(path_join(xxxROOT, 'vendors', lib_name))
+
+    # generate build scripts    
+    bx_root = os.path.abspath(path_join('../', 'bx'))
+    genie_exe = path_join(bx_root, 'tools', 'bin', 'darwin', 'genie')
+    if not os.path.isfile(genie_exe):
+        print("Could not find " + genie_exe)
+        sys.exit(1)
+
+    os.system("chmod +x " + genie_exe)
+    builder.shell([genie_exe, '--gcc=osx', ACTION])
+
+    # build
+    if builder.build_debug():
+        config = 'debug'
+    else:
+        config = 'release'
+
+    if arch == vendor_build.arch_x64:
+        bits = '64'
+    elif arch == vendor_build.arch_x86:
+        bits = '32'
+    
+    # fixme: this is where fat binary support would go if there was fat binary support
+    
+    # install lib
+    build_dir = path_join('.build', 'projects', 'gmake-osx')
+    os.chdir(build_dir)
+    jobs = vendor_build.globals['default_parallel_jobs']
+    builder.make_command(['config=%s%s' % (config, bits), 'verbose=1', \
+                          '--jobs=%d' % jobs])
+
+    os.chdir("../../../")
+
+    lib_path = path_join('.build', 'osx%s_clang' % bits, 'bin')
+    lib_path = path_join(lib_path, 'libbgfx%s.a' % config.title())
+    builder.copy_lib_file(lib_path, xxxROOT)
+
+    # install headers
+    builder.copy_header_files('include', xxxROOT)
 
 def build_linux(lib_name, builder):
     ACTION='gmake'

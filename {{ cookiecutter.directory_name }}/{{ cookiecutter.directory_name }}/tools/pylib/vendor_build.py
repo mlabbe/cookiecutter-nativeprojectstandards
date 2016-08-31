@@ -321,7 +321,7 @@ class BuildLib:
         os.environ['CXX'] = self._take_from_environment( 'CXX', get_compiler( self._cli.get_target_platform(), use_cpp=True ) )
         self._rootdir = None
         self._tmpdir = None
-
+        self._outdir = ""
 
     def verify_environment( self, expectedVars=() ):
         """Raise BuildError if environment variables are not set."""
@@ -389,8 +389,7 @@ class BuildLib:
                 os.environ['CXX'] = "%s -arch %s" % ( get_compiler( self._cli.get_target_platform(), use_cpp=True ), arch_arg )
                 os.environ['CXXFLAGS'] = "-I%s/include" % universal_dir
 
-            # fixme: is this still necessary?
-            #self._outdir = get_output_dir( code_root, arch, universal_working_dir  )
+            self._outdir = get_output_dir( code_root, arch, universal_working_dir  )
 
 
         # Linux
@@ -455,12 +454,15 @@ class BuildLib:
                 raise BuildError( 'run_step("%s") returned %i' % (' '.join(step), e.returncode) )
 
 
-    def configure( self, more_args=None, install_to_temp=False ):
+    def configure( self, more_args=None, install_to_temp=False, \
+                   universal_working_dir=False ):
         """Run a configure step.
         more_args is a list of args to append.
 
         setarch is run on Linux, which sets the architecture to the target arch settings in the
         build environment.
+
+        install_to_temp makes subsequent make install install to a temp dir
         """
 
         cmd = ['sh', 'configure']
@@ -470,6 +472,8 @@ class BuildLib:
         if install_to_temp:
             self._tmpdir = tempfile.TemporaryDirectory(suffix="vendor_build")
             cmd.append( '--prefix=%s' % (self._tmpdir.name) )
+        elif len(self._outdir):
+            cmd.append('--prefix=%s' % (self._outdir))
 
         if more_args != None:
             cmd.extend( more_args )

@@ -18,7 +18,13 @@
   {% set lang_ext = 'c' -%}
 {% elif cookiecutter.main_language == 'c++' -%}
   {% set lang_ext = 'cpp' -%}
-{% endif -%} 
+{% endif -%}
+{% if cookiecutter.project_kind == "StaticLib" or cookiecutter.project_kind == "SharedLib" %}
+ {% set out_dir = "lib" %}
+{% else %}
+ {% set out_dir = "bin" %}
+{% endif -%}
+  
 workspace "{{ cookiecutter.project_name|title }}"
   -- these dir specifications assume the generated files have been moved
   -- into a subdirectory.  ex: <root>/build/makefile
@@ -27,8 +33,15 @@ workspace "{{ cookiecutter.project_name|title }}"
   configurations { {% for etype in etype_list -%}
    "{{ etype|title }}"{% if not loop.last %}, {% endif %}
   {%- endfor %} }
-  platforms { {% if x64_count > 0 %}"x64"{% endif %}{% if x86_count > 0 and x64_count > 0 %}, {% endif %}{% if x86_count > 0 %}"x86"{% endif %} }
 
+  {% if x64_count > 0 %}
+  platforms { "x64" }
+  {% endif %}
+  {% if x86_count > 0 %}
+  filter "not system:macosx"
+    platforms { "x86" }  
+  {% endif %}
+  
   objdir(path.join(build_dir, "obj/"))
 
   -- architecture filters
@@ -79,7 +92,8 @@ workspace "{{ cookiecutter.project_name|title }}"
      }
 {% endif %}
 
-    targetdir(build_dir.."/lib/%{cfg.buildcfg}/%{cfg.platform}")
+
+  targetdir(build_dir.."/{{ out_dir }}/%{cfg.buildcfg}/%{cfg.platform}")
 
     filter "system:linux or system:macosx"
 {%- if cookiecutter.main_language == 'c89' %}
@@ -115,6 +129,16 @@ workspace "{{ cookiecutter.project_name|title }}"
       links {"dl", "pthread"}
     filter "system:windows"
       links {"SDL2main"}
+    filter "system:macosx"
+      links {"AudioToolbox.framework",
+             "AudioUnit.framework",
+             "CoreAudio.framework",
+             "IOKit.framework",
+             "Carbon.framework",
+             "Cocoa.framework",
+             "CoreVideo.framework",
+             "ForceFeedback.framework",
+             "iconv"}
 {% endif %}
 
 {% if cookiecutter.uselib_bgfx == 'y' %}
@@ -123,6 +147,11 @@ workspace "{{ cookiecutter.project_name|title }}"
       links {'bgfxRelease'}
     filter "system:linux"
       links {'GL', 'X11'}
+    filter "system:macosx"
+      links {'Cocoa.framework',
+             'QuartzCore.framework',
+             'OpenGL.framework'}
+      linkoptions { "-weak_framework Metal" } -- bug: this is separating on whitespace
 {% endif %} 
       
 {%- endif %}
