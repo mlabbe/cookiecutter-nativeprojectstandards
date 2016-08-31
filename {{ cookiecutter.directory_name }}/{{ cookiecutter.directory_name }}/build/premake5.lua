@@ -147,6 +147,8 @@ workspace "{{ cookiecutter.project_name|title }}"
       links {'bgfxRelease'}
     filter "system:linux"
       links {'GL', 'X11'}
+    filter("architecture:x86", "system:windows") 
+      links {'psapi'}
     filter "system:macosx"
       links {'Cocoa.framework',
              'QuartzCore.framework',
