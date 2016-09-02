@@ -159,11 +159,14 @@ workspace "{{ cookiecutter.project_name|title }}"
 {% if cookiecutter.uselib_glew == 'y' %}
     -- glew linking.
     -- append 'd' and regenerate to link debug glew
-    filter {}
-      links {'glew32s'}
+    filter {"not system:windows"}
+      links {'GLEW'}
+    filter {"system:linux"}
+      links {'GL'}
     filter "system:windows"
       links {'opengl32'}
       defines {'GLEW_STATIC'}
+      links {'glew32s'}
 {% endif %}      
       
 {%- endif %}

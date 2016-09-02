@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 {%- endif %}
 
 {% if cookiecutter.uselib_glew == 'y' %}
-  glEnum err = glewInit();
+  GLenum err = glewInit();
   if (GLEW_OK != err)
   {
       fprintf(stderr, "Error: %s\n", glewGetErrorString(err));

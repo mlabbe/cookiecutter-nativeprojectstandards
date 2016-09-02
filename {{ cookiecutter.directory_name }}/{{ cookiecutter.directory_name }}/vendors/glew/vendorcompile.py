@@ -41,8 +41,16 @@ def build_windows(lib_name, builder):
 def build_macos(libname, builder):
     pass
 
-def build_linux_or_macos(lib_name, builder):
-    pass
+
+def build_linux(lib_name, builder):
+    builder.verify_environment()
+    builder.set_rootdir(path_join(xxxROOT, 'vendors', lib_name))
+    builder.set_arch_environment(xxxROOT)
+    os.system("chmod +x ./config/config.guess")
+    builder.make_command('clean')
+    builder.make()
+    builder.copy_header_files('include', xxxROOT)
+    builder.copy_lib_file('lib/libGLEW.a', xxxROOT)
 
 if __name__ == '__main__':
     lib_name = 'glew'
@@ -58,10 +66,10 @@ if __name__ == '__main__':
             build_windows(lib_name, builder)
 
         if cli.get_target_platform() == 'Darwin':
-            build_linux_or_macos(lib_name, builder)            
+            build_macos(lib_name, builder)            
 
         if cli.get_target_platform() == 'Linux':
-            build_linux_or_macos(lib_name, builder)
+            build_linux(lib_name, builder)
 
     except vendor_build.BuildError as e:
         print("Failed building %s: %s" % (lib_name, e))
