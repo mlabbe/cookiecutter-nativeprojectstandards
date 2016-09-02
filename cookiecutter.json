@@ -31,6 +31,9 @@
     "uselib_bgfx": "n",
     "bgfx_archive_url": "https://github.com/bkaradzic/bgfx/archive/master.zip",
     "bg_archive_url":   "https://github.com/bkaradzic/bx/archive/master.zip",
+
+    "uselib_glew": "n",
+    "glew_archive_url": "http://kent.dl.sourceforge.net/project/glew/glew/2.0.0/glew-2.0.0.zip",
     
     "open_source_license": ["MIT license", "BSD license", "ISC license",
                             "Apache Software License 2.0", "GNU General Public License v3", "Not open source"],

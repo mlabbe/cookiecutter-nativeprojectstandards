@@ -15,6 +15,9 @@
 {% if cookiecutter.uselib_bgfx == 'y' %}
 #include <bgfx/c99/bgfx.h>
 {%- endif -%}
+{% if cookiecutter.uselib_glew == 'y' %}
+#include <GL/glew.h>
+{%- endif -%}
 
 {% if cookiecutter.project_kind == 'ConsoleApp' or cookiecutter.project_kind == 'WindowedApp' %}
 #include <stdio.h>
@@ -33,6 +36,15 @@ int main(int argc, char *argv[]) {
     }
     atexit(SDL_Quit);    
 {%- endif %}
+
+{% if cookiecutter.uselib_glew == 'y' %}
+  glEnum err = glewInit();
+  if (GLEW_OK != err)
+  {
+      fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+  }
+  fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));  
+{% endif %} 
 
 {% if cookiecutter.uselib_bgfx == 'y' %}
 	bgfx_init(BGFX_RENDERER_TYPE_COUNT

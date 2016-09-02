@@ -154,7 +154,17 @@ workspace "{{ cookiecutter.project_name|title }}"
              'QuartzCore.framework',
              'OpenGL.framework'}
       linkoptions { "-weak_framework Metal" } -- bug: this is separating on whitespace
-{% endif %} 
+{% endif %}
+
+{% if cookiecutter.uselib_glew == 'y' %}
+    -- glew linking.
+    -- append 'd' and regenerate to link debug glew
+    filter {}
+      links {'glew32s'}
+    filter "system:windows"
+      links {'opengl32'}
+      defines {'GLEW_STATIC'}
+{% endif %}      
       
 {%- endif %}
 {%- if cookiecutter.has_dist_dir == 'y' %}

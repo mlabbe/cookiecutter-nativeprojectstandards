@@ -118,6 +118,12 @@ if __name__ == '__main__':
     if not enabled('{{ cookiecutter.uselib_sdl2 }}'):
         rmdir(code_root, "vendors", "SDL2")
 
+    if not enabled('{{ cookiecutter.uselib_bgfx }}'):
+        rmdir(code_root, "vendors", "bgfx")
+
+    if not enabled('{{ cookiecutter.uselib_glew }}'):
+        rmdir(code_root, "vendors", "glew")
+
 
     # rename main project file based on extension
     if '{{ cookiecutter.main_language }}' == 'c++':
@@ -139,11 +145,13 @@ if __name__ == '__main__':
     # Download vendors
     # 
     if '{{ cookiecutter.support_vendors }}' == 'y':
-        if '{{ cookiecutter.uselib_sdl2 }}' == 'y':
+        if enabled('{{ cookiecutter.uselib_sdl2 }}'):
             download_install(code_root, "SDL2", "{{ cookiecutter.sdl2_archive_url }}")
-        if '{{ cookiecutter.uselib_bgfx }}' == 'y':
+        if enabled('{{ cookiecutter.uselib_bgfx }}'):
             download_install(code_root, "bgfx", "{{ cookiecutter.bgfx_archive_url }}")
             download_install(code_root, "bx", "{{ cookiecutter.bg_archive_url }}")
+        if enabled('{{ cookiecutter.uselib_glew }}'):
+            download_install(code_root, 'glew', "{{ cookiecutter.glew_archive_url }}")
 
     # 
     # success message

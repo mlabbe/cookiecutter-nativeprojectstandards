@@ -11,7 +11,10 @@ vendors = [
 {%- endif %}
 {% if cookiecutter.uselib_bgfx == 'y' -%}
     'bgfx',
-{%- endif %}    
+{%- endif %}
+{% if cookiecutter.uselib_glew == 'y' -%}
+    'glew',
+{%- endif %}
 ]
 
 def compile_vendor( vendor, cli ):
