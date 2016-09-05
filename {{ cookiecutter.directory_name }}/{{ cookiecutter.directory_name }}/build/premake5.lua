@@ -138,6 +138,7 @@ workspace "{{ cookiecutter.project_name|title }}"
              "Cocoa.framework",
              "CoreVideo.framework",
              "ForceFeedback.framework",
+             "OpenGL.framework",
              "iconv"}
 {% endif %}
 
