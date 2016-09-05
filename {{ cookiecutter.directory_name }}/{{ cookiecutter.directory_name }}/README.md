@@ -27,7 +27,7 @@ for bgfx:
 {% endif %}
 {% if cookiecutter.uselib_glew == 'y' %}
 for glew:
-    apt-get install libXmu-dev libXi-dev libgl-dev
+    apt-get install libXmu-dev libXi-dev libgl-dev libglu1-mesa-dev
 {% endif %}
 
 # Copyright and Credit #
