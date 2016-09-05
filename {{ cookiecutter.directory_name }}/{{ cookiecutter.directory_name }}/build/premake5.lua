@@ -171,14 +171,21 @@ workspace "{{ cookiecutter.project_name|title }}"
 {% endif %}      
       
 {%- endif %}
+
+-- cwd for debug execution is relative to installed DLL
+-- directory.
 {%- if cookiecutter.has_dist_dir == 'y' %}
-    -- cwd for debug execution is relative to installed DLL
-    -- directory.
     filter("architecture:x86", "action:vs*")
       debugdir(root_dir..'../{{ cookiecutter.directory_name }}_dist/bin/win32_x86')
     
     filter("architecture:x64", "action:vs*")
       debugdir(root_dir..'../{{ cookiecutter.directory_name }}_dist/bin/win32_x64')
+{% else %}
+    filter("architecture:x86", "action:vs*")
+      debugdir(root_dir..'../bin/win32_x86')
+    
+    filter("architecture:x64", "action:vs*")
+      debugdir(root_dir..'../bin/win32_x64')
 {% endif %}
 
 newaction

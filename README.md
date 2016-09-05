@@ -32,6 +32,7 @@ The philosophy behind the Native Project Standards is that it supports standardi
  - supported configurations
  - how vendors works
 - Add `/tools` to native project standards, comment on public header files for executable projects (they can be used for mods)
+- Copy pdb files to destinations
 
 # Credits #
 
