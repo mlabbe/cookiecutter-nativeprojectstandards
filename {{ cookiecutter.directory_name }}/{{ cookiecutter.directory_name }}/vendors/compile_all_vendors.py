@@ -52,3 +52,4 @@ if __name__ == '__main__':
             compile_vendor(vendor, cli)
     except vendor_build.BuildError as e:
         print("%s failed building: %s: %s" % (sys.argv[0], vendor, e))
+        sys.exit(1)

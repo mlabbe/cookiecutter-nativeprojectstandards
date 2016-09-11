@@ -16,8 +16,15 @@ release | what's new                          | date
 
 ## Building ##
 
+{% if cookiecutter.support_vendors == 'y' %}
+Before building {{ cookiecutter.project_name }}, you must compile its dependencies.
+
+    cd vendors
+    python3 compile_all_vendors.py
+{% endif %}
+
 {% if cookiecutter.support_build == 'y' %}
-{{ cookiecutter.project_name }} uses [Premake5](https://premake.github.io/download.html) generated Makefiles and IDE project files.  The generated project files are checked in under `build/` so you don't have to download and use Premake in most cases.
+{{ cookiecutter.project_name }} uses [Premake5](https://premake.github.io/download.html) generated Makefiles and IDE project files.  The generated project files are checked in under `build/` so you don't have to download and use Premake directly in most cases.
 {% endif %}
 
 ### Linux ###
@@ -27,7 +34,7 @@ for bgfx:
 {% endif %}
 {% if cookiecutter.uselib_glew == 'y' %}
 for glew:
-    apt-get install libXmu-dev libXi-dev libgl-dev
+    apt-get install libXmu-dev libXi-dev libgl-dev libglu1-mesa-dev
 {% endif %}
 
 # Copyright and Credit #
