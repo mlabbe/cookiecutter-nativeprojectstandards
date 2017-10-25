@@ -4,7 +4,7 @@
 # Example Usage
 
 ```C
-#include <{{ cookiecutter.project_prefix }}.h>
+#include <{{ cookiecutter.directory_name }}.h>
 ```
 {% endif %}
 

@@ -17,9 +17,9 @@ def _win32_clean(builder):
     builder.shell(['rm', '*.o'], check_errorlevel=False)
     builder.shell(['rm', '*.obj'], check_errorlevel=False)
     builder.shell(['rm', 'lua.exe'], check_errorlevel=False)
-    builder.shell(['rm', 'lua530.lib'], check_errorlevel=False)
+    builder.shell(['rm', 'lua.lib'], check_errorlevel=False)
     builder.shell(['rm', 'lua_d.exe'], check_errorlevel=False)
-    builder.shell(['rm', 'lua530_d.lib'], check_errorlevel=False)
+    builder.shell(['rm', 'lua_d.lib'], check_errorlevel=False)
 
 
 def build_windows(lib_name, builder):
@@ -31,14 +31,14 @@ def build_windows(lib_name, builder):
 
     lib_filename = None
     if builder.build_debug():
-        lib_filename = 'lua530_d.lib'
+        lib_filename = 'lua_d.lib'
         builder.shell(['cl', '/MD', '/Od', '/c', '*.c'])
         builder.shell(['ren', 'lua.obj', 'lua.o'])
         builder.shell(['ren', 'luac.obj', 'luac.o'])
         builder.shell(['lib', '/OUT:'+lib_filename, '*.obj'])
         builder.shell(['link', '/OUT:lua_d.exe', 'lua.o', lib_filename])
     else:
-        lib_filename = 'lua530.lib'
+        lib_filename = 'lua.lib'
         builder.shell(['cl', '/MD', '/O2', '/c', '*.c'])
         builder.shell(['ren', 'lua.obj', 'lua.o'])
         builder.shell(['ren', 'luac.obj', 'luac.o'])
