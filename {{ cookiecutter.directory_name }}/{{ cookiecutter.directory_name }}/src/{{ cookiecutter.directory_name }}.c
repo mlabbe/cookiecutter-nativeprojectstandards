@@ -18,6 +18,11 @@
 {% if cookiecutter.uselib_glew == 'y' %}
 #include <GL/glew.h>
 {%- endif -%}
+{% if cookiecutter.uselib_lua53 == 'y' %}
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+{%- endif -%}
 
 {% if cookiecutter.project_kind == 'ConsoleApp' or cookiecutter.project_kind == 'WindowedApp' %}
 #include <stdio.h>
@@ -25,6 +30,10 @@
 
 int main(int argc, char *argv[]) {
     puts("Welcome to {{ cookiecutter.project_name }}, a brand-new project by {{ cookiecutter.author_name }}.");
+
+{% if cookiecutter.uselib_lua53 == 'y' %}
+    lua_State *L = luaL_newstate();
+{%- endif %}
 
 {% if cookiecutter.uselib_sdl2 == 'y' %}
     if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER) != 0) {
@@ -53,6 +62,10 @@ int main(int argc, char *argv[]) {
 			, NULL
 			, NULL);
 {%- endif %}   
+
+{% if cookiecutter.uselib_lua53 == 'y' %}
+    lua_close(L);
+{%- endif %}
  
     return 0;
 }

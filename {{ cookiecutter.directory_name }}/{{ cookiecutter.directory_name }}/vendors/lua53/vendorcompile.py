@@ -48,8 +48,8 @@ def build_windows(lib_name, builder):
     builder.mkdir(include_path)
 
     # only copy the public header files
-    builder.shell(['copy', 'lua.h', include_path])
-    builder.shell(['copy', 'luaconf.h', include_path])
+    for header_file in ['lua.h', 'luaconf.h', 'lauxlib.h', 'lualib.h']:
+        builder.shell(['copy', header_file, include_path])
 
     builder.copy_lib_file(lib_filename, xxxROOT)
 

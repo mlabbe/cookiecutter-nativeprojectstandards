@@ -159,7 +159,7 @@ workspace "{{ cookiecutter.project_name|title }}"
 
 {% if cookiecutter.uselib_glew == 'y' %}
     -- glew linking.
-    -- append 'd' and regenerate to link debug glew
+    -- append 'd' and regenerate premake to link debug glew
     filter {"not system:windows"}
       links {'GLEW'}
     filter {"system:linux"}
@@ -169,7 +169,14 @@ workspace "{{ cookiecutter.project_name|title }}"
       defines {'GLEW_STATIC'}
       links {'glew32s'}
 {% endif %}      
-      
+
+{% if cookiecutter.uselib_lua53 == 'y' %}
+    -- lua linking
+    -- append '_d' and regenerate premake to link debug lua
+    filter "system:windows"
+       links {'lua530.lib'}
+{% endif %}
+
 {%- endif %}
 
 -- cwd for debug execution is relative to installed DLL
