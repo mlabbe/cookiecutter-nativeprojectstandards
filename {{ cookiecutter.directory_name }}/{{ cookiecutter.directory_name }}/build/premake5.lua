@@ -93,8 +93,6 @@ workspace "{{ cookiecutter.project_name|title }}"
 {% endif %}
 
 
-  targetdir(build_dir.."/{{ out_dir }}/%{cfg.buildcfg}/%{cfg.platform}")
-
     filter "system:linux or system:macosx"
 {%- if cookiecutter.main_language == 'c89' %}
       buildoptions {"--std=gnu90"}
@@ -182,17 +180,18 @@ workspace "{{ cookiecutter.project_name|title }}"
 -- cwd for debug execution is relative to installed DLL
 -- directory.
 {%- if cookiecutter.has_dist_dir == 'y' %}
-    filter("architecture:x86", "action:vs*")
-      debugdir(root_dir..'../{{ cookiecutter.directory_name }}_dist/bin/win32_x86')
-    
-    filter("architecture:x64", "action:vs*")
-      debugdir(root_dir..'../{{ cookiecutter.directory_name }}_dist/bin/win32_x64')
+
+   filter("action:vs*")
+      -- note that release and final exes overwrite each other with this scheme. 
+      targetdir(root_dir..'../{{ cookiecutter.directory_name }}_dist/bin/win32_$(PlatformTarget)')
+      debugdir(root_dir..'../{{ cookiecutter.directory_name }}_dist/bin/win32_$(PlatformTarget)')
+
 {% else %}
-    filter("architecture:x86", "action:vs*")
-      debugdir(root_dir..'../bin/win32_x86')
+
+    filter("action:vs*")
+      debugdir(root_dir.."../bin/$(Configuration)/win32_$(PlatformTarget)")
+      targetdir(root_dir.."../bin/$(Configuration)/win32_$(PlatformTarget)")
     
-    filter("architecture:x64", "action:vs*")
-      debugdir(root_dir..'../bin/win32_x64')
 {% endif %}
 
 newaction
