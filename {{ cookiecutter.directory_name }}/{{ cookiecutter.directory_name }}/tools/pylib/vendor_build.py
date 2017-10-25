@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #
-# Copyright (C) 2013-2016 Frogtoss Games, Inc.
+# Copyright (C) 2013-2017 Frogtoss Games, Inc.
 #
 # Usage rights granted under repo license
 #

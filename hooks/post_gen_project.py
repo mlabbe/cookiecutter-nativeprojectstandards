@@ -1,8 +1,10 @@
 import os
 import io
 import sys
+import stat
 import shutil
 import zipfile
+import tarfile
 import tempfile
 import urllib.request
 
@@ -34,16 +36,27 @@ def copyintotree(src, dst, symlinks=False, ignore=None):
             if not os.path.exists(d) or os.stat(s).st_mtime - os.stat(d).st_mtime > 1:
                 shutil.copy2(s, d)
 
-def download_install(code_root, vendor_name, archive_url):
-    if len(archive_url) == 0:
-        return
-
+def _download_file(vendor_name, archive_url):
+    """Download a file, returning its bytes"""
     print("Downloading %s from %s ..." % (vendor_name, archive_url))
     response = urllib.request.urlopen(archive_url)
     data = response.read()
     print("Completed")
-    zip_bytes = io.BytesIO(data)
+    return io.BytesIO(data)
 
+def _make_all_files_writable(root_dir):
+    """recurse root_dir, making sure all files have +w"""
+    for root, dirs, files in os.walk(root_dir):
+        for file in files:
+            path = path_join(root, file)
+            os.chmod(path, stat.S_IWRITE)
+                
+def download_unzip_install(code_root, vendor_name, archive_url):
+    if len(archive_url) == 0:
+        return
+
+    zip_bytes = _download_file(vendor_name, archive_url)
+    
     tmp_dir = tempfile.TemporaryDirectory(suffix="cookiecutter_post_gen_project")
 
     zip = zipfile.ZipFile(zip_bytes)
@@ -61,6 +74,37 @@ def download_install(code_root, vendor_name, archive_url):
     if not os.path.isdir(dst_dir):
         os.mkdir(dst_dir)
     copyintotree(src_dir, dst_dir)
+
+def download_untar_install(code_root, vendor_name, archive_url):
+    if len(archive_url) == 0:
+        return
+
+    tar_bytes = _download_file(vendor_name, archive_url)
+    tar = tarfile.open(mode='r', fileobj=tar_bytes)
+
+    tmp_dir = tempfile.TemporaryDirectory(suffix="cookiecutter_post_gen_project")
+
+    tar.extractall(tmp_dir.name)
+    print("untarred to " + tmp_dir.name)
+
+    src_dir = tmp_dir.name
+    # if there is only one directory in the tempdir, then move the contents to vendor_name
+    tmp_contents = os.listdir(tmp_dir.name)
+    if len(tmp_contents) == 1:
+        print("unzipping the contents of zip's %s into %s" % (tmp_contents[0], vendor_name))
+        src_dir = path_join(src_dir, tmp_contents[0])
+    
+    dst_dir = path_join(code_root, 'vendors', vendor_name)
+    if not os.path.isdir(dst_dir):
+        os.mkdir(dst_dir)
+
+    # workaround for some files in tar being read-only
+    _make_all_files_writable(tmp_dir.name)
+        
+    copyintotree(src_dir, dst_dir)
+
+    
+
 
 #
 # begin main
@@ -125,6 +169,9 @@ if __name__ == '__main__':
     if not enabled('{{ cookiecutter.uselib_glew }}'):
         rmdir(code_root, "vendors", "glew")
 
+    if not enabled('{{ cookiecutter.uselib_lua53 }}'):
+        rmdir(code_root, "vendors", "lua53")
+
 
     # rename main project file based on extension
     if '{{ cookiecutter.main_language }}' == 'c++':
@@ -147,12 +194,15 @@ if __name__ == '__main__':
     # 
     if '{{ cookiecutter.support_vendors }}' == 'y':
         if enabled('{{ cookiecutter.uselib_sdl2 }}'):
-            download_install(code_root, "SDL2", "{{ cookiecutter.sdl2_archive_url }}")
+            download_unzip_install(code_root, "SDL2", "{{ cookiecutter.sdl2_archive_url }}")
         if enabled('{{ cookiecutter.uselib_bgfx }}'):
-            download_install(code_root, "bgfx", "{{ cookiecutter.bgfx_archive_url }}")
-            download_install(code_root, "bx", "{{ cookiecutter.bg_archive_url }}")
+            download_unzip_install(code_root, "bgfx", "{{ cookiecutter.bgfx_archive_url }}")
+            download_unzip_install(code_root, "bx", "{{ cookiecutter.bg_archive_url }}")
         if enabled('{{ cookiecutter.uselib_glew }}'):
-            download_install(code_root, 'glew', "{{ cookiecutter.glew_archive_url }}")
+            download_unzip_install(code_root, 'glew', "{{ cookiecutter.glew_archive_url }}")
+        if enabled('{{ cookiecutter.uselib_lua53 }}'):
+            download_untar_install(code_root, 'lua53', '{{ cookiecutter.lua53_archive_url }}')
+                                                     
 
     # 
     # success message

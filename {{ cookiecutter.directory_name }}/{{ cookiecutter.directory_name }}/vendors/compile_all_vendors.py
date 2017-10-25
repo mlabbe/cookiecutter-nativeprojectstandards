@@ -15,6 +15,9 @@ vendors = [
 {% if cookiecutter.uselib_glew == 'y' -%}
     'glew',
 {%- endif %}
+{% if cookiecutter.uselib_lua53 == 'y' -%}
+    'lua53',
+{%- endif %}
 ]
 
 def compile_vendor( vendor, cli ):
@@ -33,6 +36,9 @@ def compile_vendor( vendor, cli ):
 
     if cli.options.force_clang:
         cmd.append( '--force-clang' )
+
+    if cli.options.debug:
+        cmd.append( '--debug=1')
 
     print(' '.join( cmd ))
 
