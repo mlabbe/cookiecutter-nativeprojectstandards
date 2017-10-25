@@ -44,12 +44,12 @@ def _download_file(vendor_name, archive_url):
     print("Completed")
     return io.BytesIO(data)
 
-def _make_all_files_writable(root_dir):
+def _make_all_files_readable_writable(root_dir):
     """recurse root_dir, making sure all files have +w"""
     for root, dirs, files in os.walk(root_dir):
         for file in files:
             path = path_join(root, file)
-            os.chmod(path, stat.S_IWRITE)
+            os.chmod(path, stat.S_IWRITE|stat.S_IREAD)
                 
 def download_unzip_install(code_root, vendor_name, archive_url):
     if len(archive_url) == 0:
@@ -99,8 +99,8 @@ def download_untar_install(code_root, vendor_name, archive_url):
         os.mkdir(dst_dir)
 
     # workaround for some files in tar being read-only
-    _make_all_files_writable(tmp_dir.name)
-        
+    _make_all_files_readable_writable(tmp_dir.name)
+
     copyintotree(src_dir, dst_dir)
 
     

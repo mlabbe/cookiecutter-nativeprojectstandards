@@ -36,7 +36,7 @@
     "glew_archive_url": "http://kent.dl.sourceforge.net/project/glew/glew/2.0.0/glew-2.0.0.zip",
 
     "uselib_lua53": "n",
-    "lua53_archive_url": "https://www.lua.org/ftp/lua-5.3.4.tar.gz",
+    "lua53_archive_url": "http://www.lua.org/ftp/lua-5.3.4.tar.gz",
     
     "open_source_license": ["MIT license", "BSD license", "ISC license",
                             "Apache Software License 2.0", "GNU General Public License v3", "Not open source"],
