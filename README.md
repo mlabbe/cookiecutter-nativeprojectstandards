@@ -27,15 +27,20 @@ The philosophy behind the Native Project Standards is that it supports standardi
 ## TODO ##
 
 - improve generated readme.md, especially when it comes to building
-- Copy pdb files to destinations
-- Add launch script support in `tools/bin`
+- create installer scripts
+- create helper script that generates buildinfo.h, put it in tools
 - document
  - all of the build commands
  - supported configurations
  - how vendors works
+- Add launch script support in `tools/bin`
+- Support Installers:
+ - If installer support is needed, include build/dist/insert
+ - possibly generate logo
+ - generate insertable license
 
 # Credits #
 
 Native Project Standards by Michael Labbe
-Copyright (C) 2016 Frogtoss Games, Inc.
+Copyright (C) 2016-2017 Frogtoss Games, Inc.
 [@frogtoss](https://www.twitter.com/frogtoss)

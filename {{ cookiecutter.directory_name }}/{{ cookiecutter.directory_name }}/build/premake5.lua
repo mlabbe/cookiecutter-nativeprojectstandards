@@ -206,7 +206,7 @@ newaction
          end
          local premake_path = premake_dir.."/premake5.lua"
 
-         os.execute("mkdir "..premake_dir)
+         os.mkdir(premake_dir)
          os.execute("cp premake5.lua "..premake_dir)
          os.execute("premake5 --os="..os_str.." --file="..premake_path.." "..action)
          os.execute("rm "..premake_path)
