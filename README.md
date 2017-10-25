@@ -26,6 +26,7 @@ The philosophy behind the Native Project Standards is that it supports standardi
 
 ## TODO ##
 
+- add support for NPS-compliant bin dirs outside of visual studio (currently it puts the bins under the build dirs), see `targetdir` filters in premake template
 - improve generated readme.md, especially when it comes to building
 - create installer scripts
 - create helper script that generates buildinfo.h, put it in tools

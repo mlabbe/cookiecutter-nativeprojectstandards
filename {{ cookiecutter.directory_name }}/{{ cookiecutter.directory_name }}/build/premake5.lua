@@ -171,8 +171,10 @@ workspace "{{ cookiecutter.project_name|title }}"
 {% if cookiecutter.uselib_lua53 == 'y' %}
     -- lua linking
     -- append '_d' and regenerate premake to link debug lua
-    filter "system:windows"
-       links {'lua530.lib'}
+    filter "toolset:msc"
+      links {'lua530.lib'}
+    filter "not toolset:msc"
+      links {'lua'}     
 {% endif %}
 
 {%- endif %}
@@ -181,17 +183,17 @@ workspace "{{ cookiecutter.project_name|title }}"
 -- directory.
 {%- if cookiecutter.has_dist_dir == 'y' %}
 
-   filter("action:vs*")
+   filter "toolset:msc"
       -- note that release and final exes overwrite each other with this scheme. 
       targetdir(root_dir..'../{{ cookiecutter.directory_name }}_dist/bin/win32_$(PlatformTarget)')
       debugdir(root_dir..'../{{ cookiecutter.directory_name }}_dist/bin/win32_$(PlatformTarget)')
 
 {% else %}
 
-    filter("action:vs*")
+    filter "toolset:msc"
       debugdir(root_dir.."../bin/$(Configuration)/win32_$(PlatformTarget)")
       targetdir(root_dir.."../bin/$(Configuration)/win32_$(PlatformTarget)")
-    
+
 {% endif %}
 
 newaction
