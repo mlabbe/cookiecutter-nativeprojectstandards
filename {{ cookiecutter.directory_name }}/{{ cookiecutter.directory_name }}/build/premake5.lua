@@ -72,7 +72,7 @@ workspace "{{ cookiecutter.project_name|title }}"
     optimize "On"
   {% endif %}
    
-  project "{{ cookiecutter.project_prefix }}"
+  project "{{ cookiecutter.directory_name }}"
     kind "{{ cookiecutter.project_kind }}"
 
     files {root_dir.."src/**.h",
@@ -87,9 +87,9 @@ workspace "{{ cookiecutter.project_name|title }}"
     }
 
 {% if cookiecutter.support_vendors == 'y' %}
-     sysincludedirs {
-        root_dir.."vendors/include",        
-     }
+    sysincludedirs {
+       root_dir.."vendors/include",        
+    }
 {% endif %}
 
 
@@ -171,10 +171,8 @@ workspace "{{ cookiecutter.project_name|title }}"
 {% if cookiecutter.uselib_lua53 == 'y' %}
     -- lua linking
     -- append '_d' and regenerate premake to link debug lua
-    filter "toolset:msc"
-      links {'lua530.lib'}
-    filter "not toolset:msc"
-      links {'lua'}     
+     filter {}
+       links {'lua'}     
 {% endif %}
 
 {%- endif %}

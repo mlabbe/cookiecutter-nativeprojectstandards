@@ -204,6 +204,16 @@ if __name__ == '__main__':
             download_untar_install(code_root, 'lua53', '{{ cookiecutter.lua53_archive_url }}')
                                                      
 
+    #
+    # Prune temp files
+    #
+    print("Pruning temp files")
+    for dirpath, dirnames, filenames in os.walk(code_root):
+        for filename in filenames:
+            filepath = path_join(dirpath, filename)
+            if filepath[-1] == '~':
+                os.remove(filepath)
+            
     # 
     # success message
     #
