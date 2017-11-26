@@ -104,11 +104,13 @@ workspace "{{ cookiecutter.project_name|title }}"
     -- features: off by default, turn them on and regenerate
     -- if you need them
     filter{}
+    warnings "Extra"
     rtti("off")
     exceptionhandling("off")
     filter "action:vs*"
       defines {"_CRT_SECURE_NO_WARNINGS"}
-
+      fatalwarnings {"4715"} -- not all control paths return a value
+      
 {% if cookiecutter.support_vendors == 'y' %}
     filter("architecture:x86", "system:not macosx") 
       libdirs(root_dir.."vendors/lib/x86")
