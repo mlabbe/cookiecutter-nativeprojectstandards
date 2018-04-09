@@ -78,12 +78,15 @@ workspace "{{ cookiecutter.project_name|title }}"
     files {root_dir.."src/**.h",
            root_dir.."src/**.{{ lang_ext }}",
 {% if cookiecutter.support_config == 'y' %}           root_dir.."src/config/{{ cookiecutter.project_prefix }}config.h",{% endif %}
-{% if cookiecutter.support_public_include == 'y' %}           root_dir.."include/*.h",{% endif %}
+ {% if cookiecutter.support_public_include == 'y' %}           root_dir.."include/*.h",{% endif %}
+           root_dir.."src/3rdparty/*.{{ lang_ext }}",
+           root_dir.."src/3rdparty/*.h",
     }
 
     includedirs {
 {% if cookiecutter.support_config == 'y' %}       root_dir.."src/config/",{% endif %}
-{% if cookiecutter.support_public_include == 'y' %}       root_dir.."include/",{% endif %}
+ {% if cookiecutter.support_public_include == 'y' %}       root_dir.."include/",{% endif %}
+  root_dir.."/src/3rdparty",
     }
 
 {% if cookiecutter.support_vendors == 'y' %}
@@ -126,7 +129,7 @@ workspace "{{ cookiecutter.project_name|title }}"
     filter{}
       links {'SDL2'}
     filter "system:linux"
-      links {"dl", "pthread", "sndio"}
+      links {"GL", "dl", "pthread", "sndio"}
     filter "system:windows"
       links {"SDL2main"}
     filter "system:macosx"
