@@ -126,7 +126,7 @@ workspace "{{ cookiecutter.project_name|title }}"
     filter{}
       links {'SDL2'}
     filter "system:linux"
-      links {"dl", "pthread"}
+      links {"dl", "pthread", "sndio"}
     filter "system:windows"
       links {"SDL2main"}
     filter "system:macosx"
