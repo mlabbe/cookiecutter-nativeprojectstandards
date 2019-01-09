@@ -764,6 +764,15 @@ class BuildLib:
         shutil.copy(lib_path, dst_dir)
                    
 
+    def copy_bin_file(self, bin_path, dst_root):
+        target_arch = self._cli.get_target_architecture()
+        arch_str = _get_standardized_archstring_from_arch( target_arch )
+        dst_dir = path_join(dst_root, 'vendors', 'bin', arch_str)
+        self._print_shell_cmd( ['shutil.copy(', bin_path, ', ', dst_dir, ')'] )
+        if not globals['execute_shell_cmd']:
+            return
+        self.mkdirs(dst_dir)
+        shutil.copy(bin_path, dst_dir)
 
     def confirm_binary( self, binary ):
         """Runs "which binary" on the shell, confirming that the binary
@@ -840,6 +849,11 @@ class BuildLib:
         except OSError: # already exists
             pass
 
+    def mkdirs(self, path):
+        self._print_shell_cmd( ['os.makedirs(', path, ')'] )
+        if not globals['execute_shell_cmd']:
+            return
+        os.makedirs(path, exist_ok=True)
     def build_debug( self ):
         return self._cli.options.debug
 
