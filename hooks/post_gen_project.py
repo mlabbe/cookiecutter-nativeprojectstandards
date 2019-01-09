@@ -197,7 +197,8 @@ if __name__ == '__main__':
             download_unzip_install(code_root, "SDL2", "{{ cookiecutter.sdl2_archive_url }}")
         if enabled('{{ cookiecutter.uselib_bgfx }}'):
             download_unzip_install(code_root, "bgfx", "{{ cookiecutter.bgfx_archive_url }}")
-            download_unzip_install(code_root, "bx", "{{ cookiecutter.bg_archive_url }}")
+            download_unzip_install(code_root, "bx", "{{ cookiecutter.bx_archive_url }}")
+            download_unzip_install(code_root, "bimg", "{{ cookiecutter.bimg_archive_url }}")
         if enabled('{{ cookiecutter.uselib_glew }}'):
             download_unzip_install(code_root, 'glew', "{{ cookiecutter.glew_archive_url }}")
         if enabled('{{ cookiecutter.uselib_lua53 }}'):

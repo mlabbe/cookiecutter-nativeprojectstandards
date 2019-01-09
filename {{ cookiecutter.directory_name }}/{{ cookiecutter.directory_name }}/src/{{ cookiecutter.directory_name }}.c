@@ -56,11 +56,10 @@ int main(int argc, char *argv[]) {
 {% endif %} 
 
 {% if cookiecutter.uselib_bgfx == 'y' %}
-	bgfx_init(BGFX_RENDERER_TYPE_COUNT
-			, BGFX_PCI_ID_NONE
-			, 0
-			, NULL
-			, NULL);
+    bgfx_init_t init;
+    bgfx_init_ctor(&init);
+    bgfx_init(&init);
+    bgfx_shutdown(); 
 {%- endif %}   
 
 {% if cookiecutter.uselib_lua53 == 'y' %}

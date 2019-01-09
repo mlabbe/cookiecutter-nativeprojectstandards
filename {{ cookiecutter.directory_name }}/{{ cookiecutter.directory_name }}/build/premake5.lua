@@ -148,7 +148,7 @@ workspace "{{ cookiecutter.project_name|title }}"
 {% if cookiecutter.uselib_bgfx == 'y' %}
     -- bgfx linking
     filter {}
-      links {'bgfxRelease'}
+      links {'bgfxRelease', 'bxRelease', 'bimgRelease'}
     filter "system:linux"
       links {'GL', 'X11'}
     filter("architecture:x86", "system:windows") 

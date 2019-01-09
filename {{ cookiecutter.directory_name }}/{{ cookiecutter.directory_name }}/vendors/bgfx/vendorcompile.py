@@ -10,7 +10,7 @@ xxxROOT = None
 xxxBIN  = None
 
 def build_windows(lib_name, builder):
-    COMPILER='vs2015'  # presumably this can be others
+    COMPILER='vs2017'  # presumably this can be others
     arch = builder.get_arch()
     builder.set_rootdir(path_join(xxxROOT, 'vendors', lib_name))
 
@@ -31,6 +31,8 @@ def build_windows(lib_name, builder):
     build_dir = path_join('.build', 'projects', COMPILER)
     os.chdir(build_dir)
     builder.devenv_build('bgfx.sln', config, 'bgfx')
+    builder.devenv_build('bgfx.sln', config, 'bimg')
+	
     os.chdir('../../../')    
     
     # install lib
@@ -40,12 +42,15 @@ def build_windows(lib_name, builder):
         arch_dir = 'win32_' + COMPILER
         
     lib_path = path_join('.build', arch_dir, 'bin')
-    lib_filename = 'bgfx' + config
-    builder.copy_lib_file(path_join(lib_path, lib_filename+'.lib'), xxxROOT)
-    builder.copy_lib_file(path_join(lib_path, lib_filename+'.pdb'), xxxROOT)
+    for lib_name in ('bgfx', 'bx', 'bimg'):
+        lib_filename = lib_name + config
+        builder.copy_lib_file(path_join(lib_path, lib_filename+'.lib'), xxxROOT)
+        builder.copy_lib_file(path_join(lib_path, lib_filename+'.pdb'), xxxROOT)
 
     # install headers
     builder.copy_header_files('include', xxxROOT)
+    builder.copy_header_files('../bx/include', xxxROOT)
+    builder.copy_header_files('../bimg/include', xxxROOT)
 
     
 def build_macos(libname, builder):

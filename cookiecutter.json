@@ -30,7 +30,8 @@
 
     "uselib_bgfx": "n",
     "bgfx_archive_url": "https://github.com/bkaradzic/bgfx/archive/master.zip",
-    "bg_archive_url":   "https://github.com/bkaradzic/bx/archive/master.zip",
+    "bx_archive_url":   "https://github.com/bkaradzic/bx/archive/master.zip",
+    "bimg_archive_url":   "https://github.com/bkaradzic/bimg/archive/master.zip",
 
     "uselib_glew": "n",
     "glew_archive_url": "http://kent.dl.sourceforge.net/project/glew/glew/2.0.0/glew-2.0.0.zip",
