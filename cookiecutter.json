@@ -26,7 +26,7 @@
     "support_tools": "y",
 
     "uselib_sdl2": "n",
-    "sdl2_archive_url": "http://libsdl.org/release/SDL2-2.0.8.zip",
+    "sdl2_archive_url": "http://libsdl.org/release/SDL2-2.0.9.zip",
 
     "uselib_bgfx": "n",
     "bgfx_archive_url": "https://github.com/bkaradzic/bgfx/archive/master.zip",

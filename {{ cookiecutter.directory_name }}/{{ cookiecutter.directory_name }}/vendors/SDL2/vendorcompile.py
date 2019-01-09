@@ -13,7 +13,7 @@ def build_windows(lib_name, builder):
     arch = builder.get_arch()
     builder.set_rootdir(path_join(xxxROOT, 'vendors', lib_name))
 
-    sln_name = os.path.normpath("VisualC/SDL_VS2008.sln")
+    sln_name = os.path.normpath("VisualC/SDL.sln")
     builder.devenv_upgrade(sln_name)
 
     if builder.build_debug():
