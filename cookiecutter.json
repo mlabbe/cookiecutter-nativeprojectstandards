@@ -11,9 +11,9 @@
     "author_name": "Michael Labbe",
     "author_email": "mike@frogtoss.com",
     "author_twitter": "frogtoss",
-    "author_contact_url": "http://www.frogtoss.com/contact.html",
+    "author_contact_url": "https://www.frogtoss.com/contact.html",
     "copyright_holder": "Frogtoss Games, Inc",
-    "copyright_years": "2017",
+    "copyright_years": "2020",
 
     "support_build": "y",
     "support_shaders": "n",

@@ -228,7 +228,7 @@ if __name__ == '__main__':
         print("\tgo into {{ cookiecutter.directory_name }}/vendors and run compile_all_vendors.py")
     print("\tgo into {{ cookiecutter.directory_name }}/build and build the desired project")
 
-    if '{{ cookiecutter.support_vendors }}' and '{{ cookiecutter.project_kind }}' == 'StaticLib':
+    if '{{ cookiecutter.support_vendors }}' == 'y' and '{{ cookiecutter.project_kind }}' == 'StaticLib':
         print("WARNING: You have chosen to support vendors on a static library project.  Static linking " +
               "static libraries is not supported on premake's gmake option.  The better approach " +
               "is to include all static libraries as vendors in the final binary.")
