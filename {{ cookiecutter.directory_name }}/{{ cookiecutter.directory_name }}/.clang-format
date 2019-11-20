@@ -48,6 +48,7 @@ SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
 IncludeBlocks: Preserve
+SortIncludes: false
 BreakBeforeBinaryOperators: None
 ReflowComments: true
 
