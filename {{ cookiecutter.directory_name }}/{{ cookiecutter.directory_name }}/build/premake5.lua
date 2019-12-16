@@ -55,6 +55,15 @@ workspace "{{ cookiecutter.project_name|title }}"
   {%- endif %}
 
   -- execution type filters
+  --
+  -- DEBUG | RELEASE | FINAL_RELEASE are the three canonical build types, but support
+  -- other popular macros as well. Consider:
+  -- 
+  --  * DEBUG builds have cross-comp unit debug behaviors (low perf)
+  --  * RELEASE builds are built with optimization but can have debug/logging hooks built in.
+  --  * FINAL_RELEASE builds *are also release builds*, but are very hard to debug
+  --
+  --  No explicit support for profile builds yet. Proper profiling should happen in FINAL_RELEASE.
   {%- if "debug" in etype_list %}
   filter "configurations:Debug"
     defines {"DEBUG", "_DEBUG", "FINAL_RELEASE=0"}
@@ -63,12 +72,12 @@ workspace "{{ cookiecutter.project_name|title }}"
   {% endif %}
   {%- if "release" in etype_list %}
   filter "configurations:Release"
-    defines {"NDEBUG", "FINAL_RELEASE=0"}
+    defines {"NDEBUG", "RELEASE", "FINAL_RELEASE=0"}
     optimize "On"
   {% endif %}
   {%- if "final" in etype_list %}
   filter "configurations:Final"   
-    defines {"NDEBUG", "FINAL_RELEASE=1"}
+    defines {"NDEBUG", "RELEASE", "FINAL_RELEASE=1"}
     optimize "On"
   {% endif %}
    
