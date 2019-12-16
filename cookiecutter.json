@@ -11,9 +11,9 @@
     "author_name": "Michael Labbe",
     "author_email": "mike@frogtoss.com",
     "author_twitter": "frogtoss",
-    "author_contact_url": "http://www.frogtoss.com/contact.html",
+    "author_contact_url": "https://www.frogtoss.com/contact.html",
     "copyright_holder": "Frogtoss Games, Inc",
-    "copyright_years": "2017",
+    "copyright_years": "2020",
 
     "support_build": "y",
     "support_shaders": "n",
@@ -26,11 +26,12 @@
     "support_tools": "y",
 
     "uselib_sdl2": "n",
-    "sdl2_archive_url": "http://libsdl.org/release/SDL2-2.0.8.zip",
+    "sdl2_archive_url": "http://libsdl.org/release/SDL2-2.0.9.zip",
 
     "uselib_bgfx": "n",
     "bgfx_archive_url": "https://github.com/bkaradzic/bgfx/archive/master.zip",
-    "bg_archive_url":   "https://github.com/bkaradzic/bx/archive/master.zip",
+    "bx_archive_url":   "https://github.com/bkaradzic/bx/archive/master.zip",
+    "bimg_archive_url":   "https://github.com/bkaradzic/bimg/archive/master.zip",
 
     "uselib_glew": "n",
     "glew_archive_url": "http://kent.dl.sourceforge.net/project/glew/glew/2.0.0/glew-2.0.0.zip",

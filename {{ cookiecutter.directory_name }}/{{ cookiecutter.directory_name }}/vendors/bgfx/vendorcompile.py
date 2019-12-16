@@ -9,16 +9,23 @@ from os.path import join as path_join
 xxxROOT = None
 xxxBIN  = None
 
-def build_windows(lib_name, builder):
-    COMPILER='vs2015'  # presumably this can be others
-    arch = builder.get_arch()
-    builder.set_rootdir(path_join(xxxROOT, 'vendors', lib_name))
 
+def run_genie(with_args, compiler):
     # generate build scripts
     bx_root = os.path.abspath(path_join('../', 'bx'))
     genie_exe = path_join(bx_root, 'tools', 'bin', 'windows', 'genie.exe')
     if not os.path.isfile(genie_exe):
         print("Could not find " + genie_exe)
+
+    builder.shell([genie_exe] + with_args + [compiler])
+    
+
+def build_windows(lib_name, builder):
+    COMPILER='vs2017'  # presumably this can be others
+    arch = builder.get_arch()
+    builder.set_rootdir(path_join(xxxROOT, 'vendors', lib_name))
+
+    run_genie(['--with-tools'], COMPILER)
 
     builder.shell([genie_exe, COMPILER])
 
@@ -30,7 +37,10 @@ def build_windows(lib_name, builder):
     
     build_dir = path_join('.build', 'projects', COMPILER)
     os.chdir(build_dir)
-    builder.devenv_build('bgfx.sln', config, 'bgfx')
+    # build all projects in generated sln
+    builder.devenv_build('bgfx.sln', config, project=None)
+
+	
     os.chdir('../../../')    
     
     # install lib
@@ -40,12 +50,26 @@ def build_windows(lib_name, builder):
         arch_dir = 'win32_' + COMPILER
         
     lib_path = path_join('.build', arch_dir, 'bin')
-    lib_filename = 'bgfx' + config
-    builder.copy_lib_file(path_join(lib_path, lib_filename+'.lib'), xxxROOT)
-    builder.copy_lib_file(path_join(lib_path, lib_filename+'.pdb'), xxxROOT)
+    for lib_name in ('bgfx', 'bx', 'bimg'):
+        lib_filename = lib_name + config
+        builder.copy_lib_file(path_join(lib_path, lib_filename+'.lib'), xxxROOT)
+        builder.copy_lib_file(path_join(lib_path, lib_filename+'.pdb'), xxxROOT)
 
     # install headers
     builder.copy_header_files('include', xxxROOT)
+    builder.copy_header_files('../bx/include', xxxROOT)
+    builder.copy_header_files('../bimg/include', xxxROOT)
+
+    # install binaries
+    bin_dir = path_join('.build', arch_dir, 'bin')
+    for bin_file in ('shaderc', 'texturec', 'texturev', 'geometryc'):
+        bin_file = bin_file + config
+        for ext in ('pdb', 'exe'):
+            actual_bin_file = bin_file + '.' + ext
+            builder.copy_bin_file(path_join(bin_dir, actual_bin_file), xxxROOT)            
+ 	# re-run genie with examples in case this is a developer machine build
+    # and the developer wants to run examples.  Don't build them, though.
+    run_genie(['--with-tools', '--with-examples'], COMPILER)
 
     
 def build_macos(libname, builder):
