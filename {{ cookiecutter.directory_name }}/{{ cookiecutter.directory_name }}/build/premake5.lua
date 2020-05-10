@@ -107,12 +107,14 @@ workspace "{{ cookiecutter.project_name|title }}"
 
     filter "system:linux or system:macosx"
 {%- if cookiecutter.main_language == 'c89' %}
-      buildoptions {"--std=gnu90"}
+       buildoptions {"--std=gnu90"}
 {% elif cookiecutter.main_language == 'c99' %}
       buildoptions {"--std=gnu99"}
 {% elif cookiecutter.main_language == 'c++' %}
       buildoptions {"--std=c++11"}
 {% endif %}
+      fatalwarnings {"shadow", "return-type", "implicit-function-declaration"}
+      
     -- features: off by default, turn them on and regenerate
     -- if you need them
     filter{}
