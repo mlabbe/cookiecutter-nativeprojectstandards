@@ -80,7 +80,30 @@ def build_linux_or_macos(lib_name, builder):
     builder.copy_header_files('include/SDL2', xxxROOT, from_temp=True)
     builder.copy_lib_file('lib/libSDL2.a', xxxROOT, from_temp=True)
     builder.copy_lib_file('lib/libSDL2main.a', xxxROOT, from_temp=True)
-        
+
+
+def build_freebsd(lib_name, builder):
+    builder.verify_environment()
+    builder.set_rootdir(path_join(xxxROOT, 'vendors', lib_name))
+    builder.set_arch_environment(xxxROOT)
+    builder.verify_environment()
+
+    os.environ['CFLAGS'] = '-DLIBICONV_PLUG'
+    os.environ['V'] = '1'
+    builder.configure(more_args=['ac_cv_lib_iconv_iconv_open=yes', 'ac_cv_func_iconv=yes'],
+                      install_to_temp=True)
+
+    builder.shell(['/usr/bin/sed', '-i.bak', '-e', "'/ CheckInputEvents$/d'",
+                   '-e', 's/-liconv//g', './configure'])
+
+
+    builder.make()
+    builder.make_command('install')
+    builder.copy_header_files('include/SDL2', xxxROOT, from_temp=True)
+    builder.copy_lib_file('lib/libSDL2.a', xxxROOT, from_temp=True)
+    builder.copy_lib_file('lib/libSDL2main.a', xxxROOT, from_temp=True)
+
+
 
 if __name__ == '__main__':
     lib_name = 'SDL2'
@@ -100,6 +123,9 @@ if __name__ == '__main__':
 
         if cli.get_target_platform() == 'Linux':
             build_linux_or_macos(lib_name, builder)
+
+        if cli.get_target_platform() == 'FreeBSD':
+            build_freebsd(lib_name, builder)
 
     except vendor_build.BuildError as e:
         print("Failed building %s: %s" % (lib_name, e))
