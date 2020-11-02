@@ -28,7 +28,7 @@ globals = {'default_parallel_jobs': 4,
 
 
 # Platform-independent way of specifying architecture
-(arch_x86, arch_x64, arch_armv7a) = list(range(0,3))
+(arch_x86, arch_x64, arch_armv7) = list(range(0,3))
 
 ndk_debug_build_args = ['V=1', '-B', 'NDK_DEBUG=1']
 
@@ -115,7 +115,7 @@ def get_compiler( target_platform, use_cpp=False  ):
         else:
             return ccache_str + '/usr/bin/clang' 
 
-    elif target_platform == 'Linux':
+    elif target_platform == 'Linux' or target_platform == 'Pi':
         if globals['force_clang']:
             if use_cpp:
                 return ccache_str + '/usr/bin/clang++'
@@ -133,11 +133,12 @@ def get_compiler( target_platform, use_cpp=False  ):
     elif target_platform == 'Android':
         return '' # ndk-build wraps this; unnecessary
 
-    elif target_platform == 'Pi':
-        if use_cpp:
-            return os.environ['SYSROOT'] + '/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-g++'
-        else:
-            return os.environ['SYSROOT'] + '/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc'
+    # elif target_platform == 'Pi':
+    #     if use_cpp:
+
+    #         return os.environ['SYSROOT'] + '/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-g++'
+    #     else:
+    #         return os.environ['SYSROOT'] + '/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc'
 
     return None
 
@@ -173,7 +174,7 @@ def _get_compiler_archstring_from_arch( arch, target_platform ):
             raise BuildError("Invalid architecture for " + target_platform)
 
     if target_platform == 'Pi':
-        return 'armv7a'
+        return 'armv7'
     
 
 def _get_standardized_archstring_from_arch( arch ):
@@ -182,8 +183,8 @@ def _get_standardized_archstring_from_arch( arch ):
         return 'x86'
     elif arch == arch_x64:
         return 'x64'
-    elif arch == arch_armv7a:
-        return 'armv7a'
+    elif arch == arch_armv7:
+        return 'armv7'
     else:
         raise BuildError("Invalid architecture.")
     
@@ -256,7 +257,7 @@ class BuildCLI:
         parser.add_option( '-p', '--platform', dest='platform',
                            help='platform (default is current) [%s]' % supported_platforms )
         parser.add_option( '-A', '--arch', dest='arch',
-                           help='architecture [x86, x64] (default is x64) Ignored if -p Android, Pi',
+                           help='architecture [x86, x64] (default is x64) Ignored if -p Android',
                            default='x64' )
         parser.add_option( '-c', '--clean-first', dest='clean',
                            action="store_true", default=False,
@@ -297,7 +298,7 @@ class BuildCLI:
 
     def get_target_architecture( self ):
         if self.options.platform == 'Pi':
-            return arch_armv7a
+            return arch_armv7
 
         if self.options.arch == None:
             return arch_x64
@@ -393,7 +394,7 @@ class BuildLib:
 
 
         # Linux
-        elif self._cli.get_target_platform() == 'Linux':            
+        elif self._cli.get_target_platform() == 'Linux' or self._cli.get_target_platform() == 'Pi':
 
             arch_arg = _get_compiler_archstring_from_arch( arch, self._cli.get_target_platform() )
 
@@ -410,22 +411,6 @@ class BuildLib:
             
             os.environ['TARGETLIB'] = self._cli.libname.lower()
             os.environ['NDK_PROJECT_PATH'] = os.environ['FROGLIBS'] + '/src/android'
-
-
-        elif self._cli.get_target_platform() == 'Pi':
-            sysroot = os.environ['SYSROOT']
-            compiler_args =  "--sysroot=%s " % sysroot
-            compiler_args += "-I%s/opt/vc/include " % sysroot
-            compiler_args += "-I%s/usr/include " % sysroot
-            compiler_args += "-I%s/opt/vc/include/interface/vcos/pthreads " % sysroot
-            compiler_args += "-I%s/opt/vc/include/interface/vmcs_host/linux" % sysroot
-            
-            os.environ['CC'] = get_compiler( self._cli.get_target_platform() ) + ' %s' % compiler_args
-            os.environ['CXX'] = get_compiler( self._cli.get_target_platform(), use_cpp ) + ' %s' % compiler_args
-            os.environ['LDFLAGS'] = "-L%s/opt/vc/lib -L%s/lib" % (sysroot, self._outdir)
-            os.environ['CFLAGS'] = "-I%s/include" % ( self._outdir )
-
-            self._outdir = get_output_dir( code_root, arch, False )
 
         # Other
         else:
