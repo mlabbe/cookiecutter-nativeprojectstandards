@@ -129,3 +129,16 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# native project standards files
+.vscode/
+build/gmake_linux/bin/
+build/gmake_linux/obj/
+build/gmake_macosx/bin/
+build/gmake_macosx/obj/
+vendors/**/*.o
+
+# lua vendor specific
+vendors/lua53/src/liblua.a
+vendors/lua53/src/lua
+vendors/lua53/src/luac
