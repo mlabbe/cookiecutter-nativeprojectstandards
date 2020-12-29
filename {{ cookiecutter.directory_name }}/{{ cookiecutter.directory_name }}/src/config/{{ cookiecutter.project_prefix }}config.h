@@ -12,6 +12,7 @@
 // Debug
 //
 #if defined(DEBUG)
+#    define CONFIG_DEFINES_SET 1
 #endif
 {% endif %}
 
@@ -20,18 +21,21 @@
 // Release
 //
 #if defined(NDEBUG) && !FINAL_RELEASE
+#    define CONFIG_DEFINES_SET 1
 #endif
 
 //
 // Final
 //
 #if defined(NDEBUG) && FINAL_RELEASE
+#    define CONFIG_DEFINES_SET 1
 #endif
 {% else %}
 //
 // Release
 //
 #if defined(NDEBUG)
+#    define CONFIG_DEFINES_SET 1
 #endif
 {% endif %}
 
@@ -40,5 +44,11 @@
 // {{ etype|title }}
 //
 #if defined({{ etype|upper }})
+#    define CONFIG_DEFINES_SET 1
 #endif
 {% endfor %}
+
+
+#if CONFIG_DEFINES_SET != 1
+#    error Build type (DEBUG, NDEBUG, FINAL_RELEASE, ...) must be defined at compile time.
+#endif
