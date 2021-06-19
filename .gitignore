@@ -131,7 +131,6 @@ ENV/
 .ropeproject
 
 # native project standards files
-.vscode/
 build/gmake_linux/bin/
 build/gmake_linux/obj/
 build/gmake_macosx/bin/
