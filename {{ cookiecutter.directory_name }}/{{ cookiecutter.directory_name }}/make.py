@@ -313,11 +313,22 @@ def vsbuild():
     
     if len(sln_file) == 0:
         fatal("could not find .sln file to build")
-    
+
     cmd = ['msbuild.exe', sln_file]
 
+
     args = strip_args()
-    cmd.extend(args)    
+
+    # we break from not adding additional args to
+    # msbuild/make/ninja/etc here to default to 64-bit platform on msbuild.
+    if 'VSCMD_ARG_TGT_ARCH' in os.environ and os.environ['VSCMD_ARG_TGT_ARCH'] == 'x64':
+        if not '/p:Platform=x64' in args and not '/p:Platform=x86' in args:
+            print("Forcing x64 arch in sln build")
+
+            args.append('/p:Platform=x64')
+
+
+    cmd.extend(args)
 
     shell(cmd)
 
@@ -421,7 +432,7 @@ if not is_genie(premake_filename):
 
 else:
     # GENie case
-    if is_vcvars_setup():        
+    if is_vcvars_setup():
         vsbuild()
     else:
         ninja()
