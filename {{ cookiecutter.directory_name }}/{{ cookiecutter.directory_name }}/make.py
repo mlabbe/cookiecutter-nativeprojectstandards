@@ -140,7 +140,8 @@ def print_help():
     ./make.py -t clean                          # If building with ninja, 
                                                 # this cleans
 
-    ./make.py config=release_x64 --skip-vendors # Makefile now building release, 
+    ./make.py /Property:configuration=release --skip-vendors
+                                                # visual c is now building release,
                                                 # skipping vendor building which
                                                 # is a make.py argument
     """)
